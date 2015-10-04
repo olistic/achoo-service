@@ -8,7 +8,10 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by alfredo on 04/10/15.
+ * @author Alfredo El Ters
+ * @author Diego Muracciole
+ * @author Mathías Cabano
+ * @author Matías Olivera
  */
 public class OrderAndOrderLinesWrapper implements Serializable{
     private Order order;

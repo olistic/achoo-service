@@ -1,6 +1,6 @@
 package uy.achoo.rest;
 
-import uy.achoo.controller.OrderController;
+import uy.achoo.controller.OrdersController;
 import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
 
 import javax.ws.rs.*;
@@ -16,13 +16,13 @@ import java.sql.SQLException;
  */
 @Path("/orders")
 @Produces(MediaType.APPLICATION_JSON)
-public class OrderResource {
+public class OrdersResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(OrderAndOrderLinesWrapper orderAndOrderLines) {
         Response response;
         try {
-            OrderController.createOrder(orderAndOrderLines.getOrder(), orderAndOrderLines.getOrderLines());
+            OrdersController.createOrder(orderAndOrderLines.getOrder(), orderAndOrderLines.getOrderLines());
             response = Response.status(200).entity(orderAndOrderLines).build();
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
@@ -34,10 +34,10 @@ public class OrderResource {
     @PUT
     @Path("rate")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response rateOrder(@FormParam("orderId") Integer orderId, @FormParam("score") Integer score) {
+    public Response rate(@FormParam("orderId") Integer orderId, @FormParam("score") Integer score) {
         Response response;
         try {
-            OrderController.rateOrder(orderId,score);
+            OrdersController.rateOrder(orderId, score);
             response = Response.status(200).entity(score).build();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,10 +48,10 @@ public class OrderResource {
 
     @GET
     @Path("{orderId}")
-    public Response readOrder(@PathParam("orderId") Integer orderId) {
+    public Response read(@PathParam("orderId") Integer orderId) {
         Response response;
         try {
-            OrderAndOrderLinesWrapper orderAndOrderLines = OrderController.readOrder(orderId);
+            OrderAndOrderLinesWrapper orderAndOrderLines = OrdersController.readOrder(orderId);
             response = Response.status(200).entity(orderAndOrderLines).build();
         } catch (SQLException e) {
             e.printStackTrace();

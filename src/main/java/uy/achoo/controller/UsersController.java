@@ -9,10 +9,7 @@ import uy.achoo.model.tables.pojos.User;
 import uy.achoo.util.DigestUtils;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -41,17 +38,14 @@ public class UsersController {
         // Close the database connection
         connection.close();
         return user;
-
     }
 
     public static List<User> findAllUsers() throws SQLException {
         Connection connection = DBConnector.getInstance().connection();
-
         // Initialize a Configuration
         Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
         List<User> users = new UserDao(configuration).findAll();
         connection.close();
         return users;
-
     }
 }

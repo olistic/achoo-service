@@ -1,5 +1,7 @@
 package uy.achoo.rest;
 
+import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
+import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.UsersController;
 import uy.achoo.model.tables.pojos.User;
 
@@ -47,6 +49,20 @@ public class UsersResource {
             User createdUser = UsersController.createUser(user);
             response = Response.status(200).entity(createdUser).build();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | SQLException e) {
+            e.printStackTrace();
+            response = Response.status(500).entity(e).build();
+        }
+        return response;
+    }
+
+    @GET
+    @Path("{userId}/orders")
+    public Response listOrders(@PathParam("userId") Integer userId) {
+        Response response;
+        try {
+            List<OrderAndOrderLinesWrapper> orderAndOrderLines = OrdersController.findAllOrdersOfUser(userId);
+            response = Response.status(200).entity(orderAndOrderLines).build();
+        } catch (SQLException e) {
             e.printStackTrace();
             response = Response.status(500).entity(e).build();
         }
