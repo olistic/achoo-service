@@ -29,7 +29,13 @@ import static uy.achoo.model.Tables.ORDER_LINE;
  * @author Matías Olivera
  */
 public class OrdersController {
-
+    /**
+     * Create a new order in the database
+     * @param order
+     * @param orderLines
+     * @return The inserted order
+     * @throws SQLException
+     */
     public static Order createOrder(Order order, List<OrderLine> orderLines) throws SQLException {
         Connection connection = DBConnector.getInstance().connection();
         try {
@@ -53,6 +59,13 @@ public class OrdersController {
         }
     }
 
+    /**
+     * Change the score of a Order
+     * @param orderId
+     * @param score
+     * @return The orders new score
+     * @throws SQLException
+     */
     public static Integer rateOrder(Integer orderId, Integer score) throws SQLException {
         Connection connection = DBConnector.getInstance().connection();
         try {
@@ -65,6 +78,12 @@ public class OrdersController {
         }
     }
 
+    /**
+     * Read an order from the database
+     * @param orderId
+     * @return The read order
+     * @throws SQLException
+     */
     public static OrderAndOrderLinesWrapper readOrder(Integer orderId) throws SQLException {
         Connection connection = DBConnector.getInstance().connection();
         try {
@@ -78,6 +97,12 @@ public class OrdersController {
         }
     }
 
+    /**
+     * Find all orders made by a user
+     * @param userId
+     * @return The orders made by the user
+     * @throws SQLException
+     */
     public static List<OrderAndOrderLinesWrapper> findAllOrdersOfUser(Integer userId) throws SQLException {
         Connection connection = DBConnector.getInstance().connection();
         try {
@@ -100,6 +125,12 @@ public class OrdersController {
         }
     }
 
+    /**
+     * Find all orders made to a drugstore
+     * @param drugstoreId
+     * @return The orders made to the drugstore
+     * @throws SQLException
+     */
     public static List<OrderAndOrderLinesWrapper> findAllOrdersOfDrugStore(Integer drugstoreId) throws SQLException {
         Connection connection = DBConnector.getInstance().connection();
         try {

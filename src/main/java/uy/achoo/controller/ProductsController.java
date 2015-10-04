@@ -18,6 +18,12 @@ import java.util.List;
  * @author Matías Olivera
  */
 public class ProductsController {
+    /**
+     * Read a product from the database
+     * @param productId
+     * @return The read product
+     * @throws SQLException
+     */
     public static Product readProduct(int productId) throws SQLException {
         Connection connection = DBConnector.getInstance().connection();
         try {
@@ -28,6 +34,12 @@ public class ProductsController {
         }
     }
 
+    /**
+     * Find all the products of a drugstore
+     * @param durgstoreId
+     * @return The products of the drugstore
+     * @throws SQLException
+     */
     public static List<Product> findAllProductsOfDrugstor(int durgstoreId) throws SQLException {
         Connection connection = DBConnector.getInstance().connection();
         try {

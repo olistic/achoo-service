@@ -22,6 +22,14 @@ import java.util.List;
  */
 public class UsersController {
 
+    /**
+     * Create a new user in the database
+     * @param user
+     * @return The created user
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException
+     * @throws SQLException
+     */
     public static User createUser(User user) throws NoSuchAlgorithmException, UnsupportedEncodingException, SQLException {
         Connection connection = DBConnector.getInstance().connection();
         try {
@@ -37,6 +45,11 @@ public class UsersController {
         }
     }
 
+    /**
+     * Find all users in the database
+     * @return Users found
+     * @throws SQLException
+     */
     public static List<User> findAllUsers() throws SQLException {
         Connection connection = DBConnector.getInstance().connection();
         try {
@@ -48,6 +61,15 @@ public class UsersController {
         }
     }
 
+    /**
+     * Check if the user password is correct.
+     * @param email
+     * @param password
+     * @return Whether the user´s password is correct or not
+     * @throws UnsupportedEncodingException
+     * @throws NoSuchAlgorithmException
+     * @throws SQLException
+     */
     public static boolean checkUsersPassword(String email, String password) throws UnsupportedEncodingException, NoSuchAlgorithmException, SQLException {
         Connection connection = DBConnector.getInstance().connection();
         try {

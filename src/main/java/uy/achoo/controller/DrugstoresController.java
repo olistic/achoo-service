@@ -23,7 +23,11 @@ import static uy.achoo.model.Tables.DRUGSTORE;
  * @author Matías Olivera
  */
 public class DrugstoresController {
-
+    /**
+     * Find all drugstores in the database
+     * @return Drugstores found
+     * @throws SQLException
+     */
     public static List<Drugstore> findAllDrugstores() throws SQLException {
         Connection connection = DBConnector.getInstance().connection();
         try {
@@ -35,15 +39,21 @@ public class DrugstoresController {
         }
     }
 
-    public static List<Drugstore> searchDrugstoresByName(String name) throws SQLException {
+    /**
+     * Find all drugstores by name
+     * @param namePart
+     * @return Drugstores with names that contain namePart
+     * @throws SQLException
+     */
+    public static List<Drugstore> searchDrugstoresByName(String namePart) throws SQLException {
         Connection connection = DBConnector.getInstance().connection();
         try {
             Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
             DSLContext context = DSL.using(configuration);
             List<Drugstore> drugstores = new ArrayList<>();
-            if (name != null) {
+            if (namePart != null) {
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("%").append(name).append("%");
+                stringBuilder.append("%").append(namePart).append("%");
                 drugstores = context.selectFrom(DRUGSTORE)
                         .where(DRUGSTORE.NAME.like(stringBuilder.toString())).fetch().into(Drugstore.class);
             }

@@ -11,16 +11,34 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 /**
- * Created by alfredo on 04/10/15.
+ * @author Alfredo El Ters
+ * @author Diego Muracciole
+ * @author Mathías Cabano
+ * @author Matías Olivera
+ *
+ * Auxiliary class to hash passwords
  */
 public class DigestUtils {
     private final static int ITERATION_NUMBER = 1000;
 
+    /**
+     * Hash a password with a salt
+     * @param password
+     * @param salt
+     * @return The hashed password
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException
+     */
     public static String digestPassword(String password, byte[] salt) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         byte[] bDigest = getHash(ITERATION_NUMBER,password,salt);
         return byteToBase64(bDigest);
     }
 
+    /**
+     * Generates a random salt
+     * @return The generated salt
+     * @throws NoSuchAlgorithmException
+     */
     public static byte[] getSalt() throws NoSuchAlgorithmException {
         SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
         // Salt generation 64 bits long
@@ -31,8 +49,7 @@ public class DigestUtils {
 
 
     /**
-     * From a password, a number of iterations and a salt,
-     * returns the corresponding digest
+     * Get hash from a password, a number of iterations and a salt,
      * @param iterationNb int The number of iterations of the algorithm
      * @param password String The password to encrypt
      * @param salt byte[] The salt
@@ -64,8 +81,8 @@ public class DigestUtils {
 
     /**
      * From a base 64returns a byte[]
-     * @param data byte[]
-     * @return String
+     * @param data String
+     * @return byte[]
      * @throws IOException
      */
     public static byte[] base64toBytes(String data){
