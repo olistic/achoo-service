@@ -31,6 +31,7 @@ public class RestModule extends ServletModule {
 
         // The actual REST Endpoints
         bind(UsersResource.class).in(Singleton.class);
+        bind(OrderResource.class).in(Singleton.class);
 
         // Stats
         filter("/v1/hello").through(new RequestStatsFilter("v1_hello"));

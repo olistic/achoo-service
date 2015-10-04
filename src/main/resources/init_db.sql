@@ -1,13 +1,72 @@
-CREATE DATABASE `achoo_dev`;
+CREATE DATABASE IF NOT EXISTS `achoo_dev`;
 
 USE `achoo_dev`;
 
-CREATE TABLE `user` (
-  `id` INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS  `user` (
+  `id` INT  AUTO_INCREMENT NOT NULL,
   `first_name` VARCHAR(30) NOT NULL,
   `last_name` VARCHAR(30) NOT NULL,
   `email` VARCHAR(80) NOT NULL,
   `password` CHAR(64) NOT NULL,
   `salt` CHAR(20) NOT NULL,
-    UNIQUE INDEX (`email`)
-);
+    UNIQUE INDEX (`email`),
+  PRIMARY KEY (`id`));
+
+CREATE TABLE IF NOT EXISTS `drugstore` (
+  `id` INT  NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `phone_number` VARCHAR(15) NULL,
+  `adress` VARCHAR(45) NOT NULL,
+   INDEX (`name` ASC),
+  PRIMARY KEY (`id`));
+
+CREATE TABLE IF NOT EXISTS `product` (
+  `id` INT  NOT NULL AUTO_INCREMENT,
+  `drugstore_id` INT  NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `description` VARCHAR(500) NOT NULL,
+  `unitary_price` DOUBLE NOT NULL,
+  INDEX `fk_products_drugstore_idx` (`drugstore_id` ASC),
+  INDEX (`name` ASC),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_products_drugstore`
+  FOREIGN KEY (`drugstore_id`)
+  REFERENCES `drugstore` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE TABLE IF NOT EXISTS `order` (
+  `id` INT  NOT NULL AUTO_INCREMENT,
+  `user_id` INT  NOT NULL,
+  `drugstore_id` INT  NOT NULL,
+  `date` TIMESTAMP NOT NULL,
+  `score` INT NULL,
+  INDEX `fk_orders_drugstore_idx` (`drugstore_id` ASC),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_orders_drugstore`
+  FOREIGN KEY (`drugstore_id`)
+  REFERENCES `drugstore` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_orders_user`
+  FOREIGN KEY (`user_id`)
+  REFERENCES `user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+CREATE TABLE IF NOT EXISTS `order_line` (
+  `order_id` INT  NOT NULL,
+  `product_id` INT  NOT NULL,
+  `amount` INT  NOT NULL,
+  PRIMARY KEY (`order_id`, `product_id`),
+  INDEX `fk_order_lines_products_idx` (`product_id` ASC),
+  CONSTRAINT `fk_order_lines_products`
+  FOREIGN KEY (`product_id`)
+  REFERENCES `product` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_order_lines_orders`
+  FOREIGN KEY (`order_id`)
+  REFERENCES `order` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
