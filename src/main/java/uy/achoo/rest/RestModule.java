@@ -1,15 +1,11 @@
 package uy.achoo.rest;
 
 import com.google.inject.Singleton;
-import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import uy.achoo.rest.util.JsonExceptionMapper;
 import uy.achoo.rest.util.RequestStatsFilter;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Configures our REST service
@@ -34,7 +30,7 @@ public class RestModule extends ServletModule {
         serve("/*").with(GuiceContainer.class);
 
         // The actual REST Endpoints
-        bind(AchooResource.class).in(Singleton.class);
+        bind(UsersResource.class).in(Singleton.class);
 
         // Stats
         filter("/v1/hello").through(new RequestStatsFilter("v1_hello"));

@@ -15,6 +15,8 @@ import org.mortbay.jetty.servlet.Context;
 import uy.achoo.rest.RestModule;
 
 import javax.inject.Inject;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
@@ -58,6 +60,18 @@ public final class AchooServiceMain extends AbstractApplication {
                 new RestModule(),
                 new StatsModule()
         );
+    }
+
+    private void connectToDatabase() {
+        String userName = "root";
+        String password = "";
+        String url = "jdbc:mysql://localhost:3306/achoo_dev";
+
+        try (Connection conn = DriverManager.getConnection(url, userName, password)) {
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void addRestSupport() {
