@@ -15,37 +15,52 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Created by alfredo on 04/10/15.
+ * @author Alfredo El Ters
+ * @author Diego Muracciole
+ * @author Mathías Cabano
+ * @author Matías Olivera
  */
 public class UsersController {
 
     public static User createUser(User user) throws NoSuchAlgorithmException, UnsupportedEncodingException, SQLException {
-        // Open the database connection
         Connection connection = DBConnector.getInstance().connection();
-
-        // Initialize a Configuration
-        Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-
-        // Initialize the DAO with the Configuration
-        UserDao userDao = new UserDao(configuration);
-        byte[] salt = DigestUtils.getSalt();
-
-        user.setPassword(DigestUtils.digestPassword(user.getPassword(), salt));
-        user.setSalt(DigestUtils.byteToBase64(salt));
-        // Insert the POJO
-        userDao.insert(user);
-
-        // Close the database connection
-        connection.close();
-        return user;
+        try {
+            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
+            UserDao userDao = new UserDao(configuration);
+            byte[] salt = DigestUtils.getSalt();
+            user.setPassword(DigestUtils.digestPassword(user.getPassword(), salt));
+            user.setSalt(DigestUtils.byteToBase64(salt));
+            userDao.insert(user);
+            return user;
+        } finally {
+            connection.close();
+        }
     }
 
     public static List<User> findAllUsers() throws SQLException {
         Connection connection = DBConnector.getInstance().connection();
-        // Initialize a Configuration
-        Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-        List<User> users = new UserDao(configuration).findAll();
-        connection.close();
-        return users;
+        try {
+            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
+            List<User> users = new UserDao(configuration).findAll();
+            return users;
+        } finally {
+            connection.close();
+        }
+    }
+
+    public static boolean checkUsersPassword(String email, String password) throws UnsupportedEncodingException, NoSuchAlgorithmException, SQLException {
+        Connection connection = DBConnector.getInstance().connection();
+        try {
+            boolean result = false;
+            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
+            User user = new UserDao(configuration).fetchOneByEmail(email);
+            if (user != null) {
+                String hashedPassword = DigestUtils.digestPassword(password, DigestUtils.base64toBytes(user.getSalt()));
+                result = hashedPassword.equals(user.getPassword());
+            }
+            return result;
+        } finally {
+            connection.close();
+        }
     }
 }

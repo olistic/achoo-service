@@ -1,5 +1,7 @@
 package uy.achoo.util;
 
+import com.sun.jersey.core.util.Base64;
+import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
@@ -57,7 +59,16 @@ public class DigestUtils {
      * @throws IOException
      */
     public static String byteToBase64(byte[] data){
-        BASE64Encoder endecoder = new BASE64Encoder();
-        return endecoder.encode(data);
+        return new String(Base64.encode(data));
+    }
+
+    /**
+     * From a base 64returns a byte[]
+     * @param data byte[]
+     * @return String
+     * @throws IOException
+     */
+    public static byte[] base64toBytes(String data){
+        return Base64.decode(data.getBytes());
     }
 }
