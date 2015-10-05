@@ -1,7 +1,9 @@
 package uy.achoo.rest;
 
+import com.sun.jersey.spi.container.ResourceFilters;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
+import uy.achoo.rest.util.AuthenticationRequiredFilter;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -18,6 +20,7 @@ import java.sql.SQLException;
 @Produces(MediaType.APPLICATION_JSON)
 public class OrdersResource {
     @POST
+    @ResourceFilters(AuthenticationRequiredFilter.class)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(OrderAndOrderLinesWrapper orderAndOrderLines) {
         Response response;
@@ -32,6 +35,7 @@ public class OrdersResource {
     }
 
     @PUT
+    @ResourceFilters(AuthenticationRequiredFilter.class)
     @Path("rate")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response rate(@FormParam("orderId") Integer orderId, @FormParam("score") Integer score) {
@@ -47,6 +51,7 @@ public class OrdersResource {
     }
 
     @GET
+    @ResourceFilters(AuthenticationRequiredFilter.class)
     @Path("{orderId}")
     public Response read(@PathParam("orderId") Integer orderId) {
         Response response;

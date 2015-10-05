@@ -1,11 +1,13 @@
 package uy.achoo.rest;
 
+import com.sun.jersey.spi.container.ResourceFilters;
 import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.controller.DrugstoresController;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.ProductsController;
 import uy.achoo.model.tables.pojos.Drugstore;
 import uy.achoo.model.tables.pojos.Product;
+import uy.achoo.rest.util.AuthenticationRequiredFilter;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

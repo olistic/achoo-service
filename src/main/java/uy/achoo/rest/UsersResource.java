@@ -1,16 +1,15 @@
 package uy.achoo.rest;
 
+import com.sun.jersey.spi.container.ResourceFilters;
 import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.UsersController;
 import uy.achoo.model.tables.pojos.User;
+import uy.achoo.rest.util.AuthenticationRequiredFilter;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -45,6 +44,7 @@ public class UsersResource {
     }
 
     @POST
+    @ResourceFilters(AuthenticationRequiredFilter.class)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(User user) {
         Response response;
@@ -59,6 +59,7 @@ public class UsersResource {
     }
 
     @GET
+    @ResourceFilters(AuthenticationRequiredFilter.class)
     @Path("{userId}/orders")
     public Response listOrders(@PathParam("userId") Integer userId) {
         Response response;
@@ -75,12 +76,12 @@ public class UsersResource {
     @POST
     @Path("authenticate")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response authenticate(@FormParam("email") String email, @FormParam("password") String password){
+    public Response authenticate(@FormParam("email") String email, @FormParam("password") String password) {
         Response response;
         try {
             boolean authenticated = UsersController.checkUsersPassword(email, password);
             response = Response.status(200).entity(authenticated).build();
-        } catch (NoSuchAlgorithmException|UnsupportedEncodingException |SQLException   e) {
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException | SQLException e) {
             e.printStackTrace();
             response = Response.status(500).entity(e).build();
         }
