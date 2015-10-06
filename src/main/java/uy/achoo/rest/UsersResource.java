@@ -6,8 +6,10 @@ import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.UsersController;
 import uy.achoo.model.tables.pojos.User;
 import uy.achoo.rest.util.AuthenticationRequiredFilter;
+import uy.achoo.util.EmailService;
 
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -44,14 +46,19 @@ public class UsersResource {
     }
 
     @POST
-    @ResourceFilters(AuthenticationRequiredFilter.class)
+//    @ResourceFilters(AuthenticationRequiredFilter.class)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(User user) {
         Response response;
         try {
+            String password = user.getPassword();
             User createdUser = UsersController.createUser(user);
+            if (createdUser != null) {
+                EmailService.sendRegistrationMail(createdUser.getEmail(), createdUser.getFirstName(), password);
+            }
             response = Response.status(200).entity(createdUser).build();
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException | SQLException e) {
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException |
+                SQLException | MessagingException e) {
             e.printStackTrace();
             response = Response.status(500).entity(e).build();
         }
@@ -79,9 +86,27 @@ public class UsersResource {
     public Response authenticate(@FormParam("email") String email, @FormParam("password") String password) {
         Response response;
         try {
-            boolean authenticated = UsersController.checkUsersPassword(email, password);
-            response = Response.status(200).entity(authenticated).build();
+            User authenticatedUser = UsersController.fetchUserByEmailAndPassword(email, password);
+            response = Response.status(200).entity(authenticatedUser).build();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | SQLException e) {
+            e.printStackTrace();
+            response = Response.status(500).entity(e).build();
+        }
+        return response;
+    }
+
+    @POST
+    @Path("reset-password")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response resetPassword(@FormParam("email") String email) {
+        Response response;
+        try {
+            String newPassword = UsersController.resetPassword(email);
+            if (newPassword != null) {
+                EmailService.sendResetPsswordMail(email, newPassword);
+            }
+            response = Response.status(200).entity(newPassword != null ? "\"" + newPassword + "\"" : null).build();
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException | SQLException | MessagingException e) {
             e.printStackTrace();
             response = Response.status(500).entity(e).build();
         }

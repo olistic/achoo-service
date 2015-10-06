@@ -78,6 +78,8 @@
             <version>1.2.17</version>
         </dependency>
 
+
+
         <!-- Twitter Libraries -->
         <dependency>
             <groupId>com.twitter.common</groupId>
@@ -146,6 +148,13 @@
             <artifactId>jersey-guice</artifactId>
             <version>1.19</version>
         </dependency>
+
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.5.0-b01</version>
+        </dependency>
+
 
         <!-- Database access -->
         <dependency>
@@ -221,7 +230,6 @@
                                         <exclude>javax.jms:jms</exclude>
                                         <exclude>com.sun.jdmk:jmxtools</exclude>
                                         <exclude>com.sun.jmx:jmxri</exclude>
-                                        <exclude>javax.mail:mail</exclude>
                                     </excludes>
                                     <includes>
                                         <include>com.google.guava:guava:[11.0.2,)</include>
