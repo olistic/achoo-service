@@ -28,12 +28,6 @@ public class EmailService {
         sb.append("<p> Hello, ")
                 .append(firstName)
                 .append(":</p><p>You have a new account in <a href=\"http://localhost:8080/achoo-frontend/index.html\"> Achoo!</a>")
-                .append("<p>Your username is : <b>")
-                .append(email)
-                .append("</b>")
-                .append(" and your password is : <b>")
-                .append(password)
-                .append("</b></p>")
                 .append("<br></br>");
         String body = sb.toString();
         sendMail(email, subject, body);

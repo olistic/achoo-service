@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static uy.achoo.model.Tables.DRUGSTORE;
+import static uy.achoo.model.Tables.PRODUCT;
 
 /**
  * @author Alfredo El Ters
@@ -56,6 +57,25 @@ public class DrugstoresController {
                 stringBuilder.append("%").append(namePart).append("%");
                 drugstores = context.selectFrom(DRUGSTORE)
                         .where(DRUGSTORE.NAME.like(stringBuilder.toString())).fetch().into(Drugstore.class);
+            }
+            return drugstores;
+        } finally {
+            connection.close();
+        }
+    }
+
+    public static List<Drugstore> searchDrugstoresByProduct(String productNamePart) throws SQLException {
+        Connection connection = DBConnector.getInstance().connection();
+        try {
+            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
+            DSLContext context = DSL.using(configuration);
+            List<Drugstore> drugstores = new ArrayList<>();
+            if (productNamePart != null) {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("%").append(productNamePart).append("%");
+                drugstores = context.selectDistinct(DRUGSTORE.ID,DRUGSTORE.NAME, DRUGSTORE.PHONE_NUMBER, DRUGSTORE.ADRESS).
+                        from(PRODUCT).join(DRUGSTORE).on(PRODUCT.DRUGSTORE_ID.equal(DRUGSTORE.ID))
+                        .where(PRODUCT.NAME.like(stringBuilder.toString())).fetchInto(Drugstore.class);
             }
             return drugstores;
         } finally {

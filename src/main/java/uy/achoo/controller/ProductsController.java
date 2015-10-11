@@ -49,4 +49,19 @@ public class ProductsController {
             connection.close();
         }
     }
+
+    /**
+     * Lists all the products
+     * @return The products of the drugstore
+     * @throws SQLException
+     */
+    public static List<Product> listAllProducts() throws SQLException {
+        Connection connection = DBConnector.getInstance().connection();
+        try {
+            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
+            return new ProductDao(configuration).findAll();
+        } finally {
+            connection.close();
+        }
+    }
 }

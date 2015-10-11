@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author Alfredo El Ters
@@ -25,6 +26,20 @@ import java.sql.SQLException;
 @Path("/products")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProductsResource {
+
+    @GET
+    public Response listAllProducts(){
+        Response response;
+        try {
+            List<Product> products = ProductsController.listAllProducts();
+            response = Response.status(200).entity(products).build();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response = Response.status(500).entity(e).build();
+        }
+        return response;
+    }
+
     @GET
     @Path("{productId}")
     public Response read(@PathParam("productId") Integer productId) {

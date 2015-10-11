@@ -7,7 +7,6 @@ import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.ProductsController;
 import uy.achoo.model.tables.pojos.Drugstore;
 import uy.achoo.model.tables.pojos.Product;
-import uy.achoo.rest.util.AuthenticationRequiredFilter;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -39,12 +38,27 @@ public class DrugstoresResource {
     }
 
     @GET
-    @Path("search")
+    @Path("search_name")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response searchDrugstores(@QueryParam("name") String name) {
+    public Response searchDrugstoresByName(@QueryParam("name") String name) {
         Response response;
         try {
             List<Drugstore> drugstores = DrugstoresController.searchDrugstoresByName(name);
+            response = Response.status(200).entity(drugstores).build();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response = Response.status(500).entity(e).build();
+        }
+        return response;
+    }
+
+    @GET
+    @Path("search_product")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response searchDrugstoresByProduct(@QueryParam("name") String name) {
+        Response response;
+        try {
+            List<Drugstore> drugstores = DrugstoresController.searchDrugstoresByProduct(name);
             response = Response.status(200).entity(drugstores).build();
         } catch (SQLException e) {
             e.printStackTrace();
