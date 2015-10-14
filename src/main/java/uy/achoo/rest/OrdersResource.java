@@ -5,6 +5,7 @@ import uy.achoo.controller.OrdersController;
 import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.rest.util.AuthenticationRequiredFilter;
 
+import javax.mail.MessagingException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -27,9 +28,9 @@ public class OrdersResource {
         try {
             OrdersController.createOrder(orderAndOrderLines.getOrder(), orderAndOrderLines.getOrderLines());
             response = Response.status(200).entity(orderAndOrderLines).build();
-        } catch (SQLException | NullPointerException e) {
+        } catch (SQLException | NullPointerException |MessagingException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(e).build();
+            response = Response.status(500).entity(null).build();
         }
         return response;
     }
@@ -45,7 +46,7 @@ public class OrdersResource {
             response = Response.status(200).entity(score).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(e).build();
+            response = Response.status(500).entity(null).build();
         }
         return response;
     }
@@ -60,7 +61,7 @@ public class OrdersResource {
             response = Response.status(200).entity(orderAndOrderLines).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(e).build();
+            response = Response.status(500).entity(null).build();
         }
         return response;
     }

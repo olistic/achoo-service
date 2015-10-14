@@ -1,17 +1,11 @@
 package uy.achoo.rest;
 
 
-import com.sun.jersey.spi.container.ResourceFilters;
-import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
-import uy.achoo.controller.OrdersController;
+
 import uy.achoo.controller.ProductsController;
 import uy.achoo.model.tables.pojos.Product;
-import uy.achoo.rest.util.AuthenticationRequiredFilter;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
@@ -35,7 +29,7 @@ public class ProductsResource {
             response = Response.status(200).entity(products).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(e).build();
+            response = Response.status(500).entity(null).build();
         }
         return response;
     }
@@ -49,9 +43,22 @@ public class ProductsResource {
             response = Response.status(200).entity(product).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(e).build();
+            response = Response.status(500).entity(null).build();
         }
         return response;
     }
 
+    @GET
+    @Path("search/name")
+    public Response searchByName(@QueryParam("name") String productNamePart) {
+        Response response;
+        try {
+            List<Product> products = ProductsController.searchProductsByName(productNamePart);
+            response = Response.status(200).entity(products).build();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response = Response.status(500).entity(null).build();
+        }
+        return response;
+    }
 }

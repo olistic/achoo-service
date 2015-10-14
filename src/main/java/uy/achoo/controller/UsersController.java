@@ -7,6 +7,7 @@ import uy.achoo.database.DBConnector;
 import uy.achoo.model.tables.daos.UserDao;
 import uy.achoo.model.tables.pojos.User;
 import uy.achoo.util.DigestUtils;
+import uy.achoo.util.EmailService;
 import uy.achoo.util.PasswordGenerator;
 
 import java.io.UnsupportedEncodingException;
@@ -133,6 +134,22 @@ public class UsersController {
                 result = newPassword;
             }
             return result;
+        } finally {
+            connection.close();
+        }
+    }
+
+    /**
+     * Check if an email is available for use
+     * @param email
+     * @return Whether the email is available or not
+     */
+    public static Boolean isEmailAvailable(String email) throws SQLException {
+        Connection connection = DBConnector.getInstance().connection();
+        try {
+            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
+            UserDao userDao = new UserDao(configuration);
+            return EmailService.validateEmail(email) && userDao.fetchOneByEmail(email) == null;
         } finally {
             connection.close();
         }

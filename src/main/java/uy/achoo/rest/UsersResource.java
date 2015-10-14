@@ -40,7 +40,7 @@ public class UsersResource {
             response = Response.status(200).entity(users).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(e).build();
+            response = Response.status(500).entity(null).build();
         }
         return response;
     }
@@ -60,10 +60,11 @@ public class UsersResource {
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException |
                 SQLException | MessagingException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(e).build();
+            response = Response.status(500).entity(null).build();
         }
         return response;
     }
+
 
     @GET
     @ResourceFilters(AuthenticationRequiredFilter.class)
@@ -75,7 +76,7 @@ public class UsersResource {
             response = Response.status(200).entity(orderAndOrderLines).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(e).build();
+            response = Response.status(500).entity(null).build();
         }
         return response;
     }
@@ -90,7 +91,7 @@ public class UsersResource {
             response = Response.status(200).entity(authenticatedUser).build();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(e).build();
+            response = Response.status(500).entity(null).build();
         }
         return response;
     }
@@ -103,12 +104,26 @@ public class UsersResource {
         try {
             String newPassword = UsersController.resetPassword(email);
             if (newPassword != null) {
-                EmailService.sendResetPsswordMail(email, newPassword);
+                EmailService.sendResetPasswordMail(email, newPassword);
             }
             response = Response.status(200).entity(newPassword != null ? "\"" + newPassword + "\"" : null).build();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | SQLException | MessagingException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(e).build();
+            response = Response.status(500).entity(null).build();
+        }
+        return response;
+    }
+
+    @GET
+    @Path("available_email")
+    public Response isEmailAvailable(@QueryParam("email") String email) {
+        Response response;
+        try {
+            Boolean result = UsersController.isEmailAvailable(email);
+            response = Response.status(200).entity(result).build();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response = Response.status(500).entity(null).build();
         }
         return response;
     }
