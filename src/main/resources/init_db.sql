@@ -16,18 +16,18 @@ CREATE TABLE IF NOT EXISTS `drugstore` (
   `id` INT  NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `phone_number` VARCHAR(15) NULL,
-  `adress` VARCHAR(45) NOT NULL,
+  `address` VARCHAR(45) NOT NULL,
    INDEX (`name` ASC),
   PRIMARY KEY (`id`));
 
 CREATE TABLE IF NOT EXISTS `product` (
   `id` INT  NOT NULL AUTO_INCREMENT,
   `drugstore_id` INT  NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  `description` VARCHAR(500) NOT NULL,
-  `unitary_price` DOUBLE NOT NULL,
+  `product_name` VARCHAR(45) NOT NULL,
+  `product_description` VARCHAR(500) NOT NULL,
+  `product_unitary_price` DOUBLE NOT NULL,
   INDEX `fk_products_drugstore_idx` (`drugstore_id` ASC),
-  INDEX (`name` ASC),
+  INDEX (`product_name` ASC),
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_products_drugstore`
   FOREIGN KEY (`drugstore_id`)

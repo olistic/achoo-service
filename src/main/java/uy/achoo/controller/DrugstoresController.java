@@ -5,9 +5,11 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
+import uy.achoo.customModel.DrugstoreJPA;
 import uy.achoo.database.DBConnector;
 import uy.achoo.model.tables.daos.DrugstoreDao;
 import uy.achoo.model.tables.pojos.Drugstore;
+import uy.achoo.util.GoogleService;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -46,17 +48,20 @@ public class DrugstoresController {
      * @return Drugstores with names that contain namePart
      * @throws SQLException
      */
-    public static List<Drugstore> searchDrugstoresByName(String namePart) throws SQLException {
+    public static List<DrugstoreJPA> searchDrugstoresByName(String namePart, String clientAdress) throws Exception {
         Connection connection = DBConnector.getInstance().connection();
         try {
             Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
             DSLContext context = DSL.using(configuration);
-            List<Drugstore> drugstores = new ArrayList<>();
+            List<DrugstoreJPA> drugstores = new ArrayList<>();
             if (namePart != null) {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("%").append(namePart).append("%");
                 drugstores = context.selectFrom(DRUGSTORE)
-                        .where(DRUGSTORE.NAME.like(stringBuilder.toString())).fetch().into(Drugstore.class);
+                        .where(DRUGSTORE.NAME.like(stringBuilder.toString())).fetch().into(DrugstoreJPA.class);
+                if(clientAdress != null){
+                    drugstores = GoogleService.orderDrugstoresByLocation(clientAdress, drugstores);
+                }
             }
             return drugstores;
         } finally {
@@ -70,18 +75,22 @@ public class DrugstoresController {
      * @return The list of drugstores with that product.
      * @throws SQLException
      */
-    public static List<Drugstore> searchDrugstoresByProductName(String productNamePart) throws SQLException {
+    public static List<DrugstoreJPA> searchDrugstoresByProductName(String productNamePart, String clientAddress) throws Exception {
         Connection connection = DBConnector.getInstance().connection();
         try {
             Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
             DSLContext context = DSL.using(configuration);
-            List<Drugstore> drugstores = new ArrayList<>();
+            List<DrugstoreJPA> drugstores = new ArrayList<>();
             if (productNamePart != null) {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("%").append(productNamePart).append("%");
-                drugstores = context.selectDistinct(DRUGSTORE.ID,DRUGSTORE.NAME, DRUGSTORE.PHONE_NUMBER, DRUGSTORE.ADRESS).
+                drugstores = context.selectDistinct(PRODUCT.PRODUCT_NAME, PRODUCT.PRODUCT_DESCRIPTION, PRODUCT.PRODUCT_UNITARY_PRICE,
+                        DRUGSTORE.ID,DRUGSTORE.NAME, DRUGSTORE.PHONE_NUMBER, DRUGSTORE.ADDRESS).
                         from(PRODUCT).join(DRUGSTORE).on(PRODUCT.DRUGSTORE_ID.equal(DRUGSTORE.ID))
-                        .where(PRODUCT.NAME.like(stringBuilder.toString())).fetchInto(Drugstore.class);
+                        .where(PRODUCT.PRODUCT_NAME.like(stringBuilder.toString())).fetchInto(DrugstoreJPA.class);
+                if(clientAddress != null){
+                    drugstores = GoogleService.orderDrugstoresByLocation(clientAddress, drugstores);
+                }
             }
             return drugstores;
         } finally {
@@ -103,7 +112,7 @@ public class DrugstoresController {
             DSLContext context = DSL.using(configuration);
             List<Drugstore> drugstores = new ArrayList<>();
             if (productId != null) {
-                drugstores = context.selectDistinct(DRUGSTORE.ID,DRUGSTORE.NAME, DRUGSTORE.PHONE_NUMBER, DRUGSTORE.ADRESS).
+                drugstores = context.selectDistinct(DRUGSTORE.ID,DRUGSTORE.NAME, DRUGSTORE.PHONE_NUMBER, DRUGSTORE.ADDRESS).
                         from(PRODUCT).join(DRUGSTORE).on(PRODUCT.DRUGSTORE_ID.equal(DRUGSTORE.ID))
                         .where(PRODUCT.ID.equal(productId)).fetchInto(Drugstore.class);
             }

@@ -89,7 +89,7 @@ public class ProductsController {
             if (namePart != null) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("%").append(namePart).append("%");
-                products = context.selectFrom(PRODUCT).where(PRODUCT.NAME.like(sb.toString())).fetchInto(Product.class);
+                products = context.selectFrom(PRODUCT).where(PRODUCT.PRODUCT_NAME.like(sb.toString())).fetchInto(Product.class);
             }
             return products;
         } finally {

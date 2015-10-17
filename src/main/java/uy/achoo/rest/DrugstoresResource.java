@@ -5,6 +5,7 @@ import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.controller.DrugstoresController;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.ProductsController;
+import uy.achoo.customModel.DrugstoreJPA;
 import uy.achoo.model.tables.pojos.Drugstore;
 import uy.achoo.model.tables.pojos.Product;
 
@@ -38,27 +39,14 @@ public class DrugstoresResource {
     }
 
     @GET
-    @Path("search/name")
-    public Response searchDrugstoresByName(@QueryParam("name") String name) {
+    @Path("search")
+    public Response searchDrugstoresByProduct(@QueryParam("name") String productNamePart,
+                                              @QueryParam("address") String address) {
         Response response;
         try {
-            List<Drugstore> drugstores = DrugstoresController.searchDrugstoresByName(name);
+            List<DrugstoreJPA> drugstores = DrugstoresController.searchDrugstoresByProductName(productNamePart, address);
             response = Response.status(200).entity(drugstores).build();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            response = Response.status(500).entity(null).build();
-        }
-        return response;
-    }
-
-    @GET
-    @Path("search/product_name")
-    public Response searchDrugstoresByProduct(@QueryParam("name") String productNamePart) {
-        Response response;
-        try {
-            List<Drugstore> drugstores = DrugstoresController.searchDrugstoresByProductName(productNamePart);
-            response = Response.status(200).entity(drugstores).build();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             response = Response.status(500).entity(null).build();
         }

@@ -7,11 +7,13 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by Mathias on 10/5/15.
+ * @author Alfredo El Ters
+ * @author Diego Muracciole
+ * @author Mathías Cabano
+ * @author Matías Olivera
  */
 public class EmailService {
     private static final String SMTP_HOST = "smtp.gmail.com";
