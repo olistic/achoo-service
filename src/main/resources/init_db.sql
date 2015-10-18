@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS `drugstore` (
   `name`         VARCHAR(45) NOT NULL,
   `phone_number` VARCHAR(15) NULL,
   `address`      VARCHAR(45) NOT NULL,
+  `image_url`    VARCHAR(200)  NULL,
   INDEX (`name` ASC),
   PRIMARY KEY (`id`)
 );

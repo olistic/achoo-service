@@ -1,6 +1,5 @@
 package uy.achoo.util;
 
-import com.google.maps.DistanceMatrixApi;
 import com.google.maps.DistanceMatrixApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.model.DistanceMatrix;
@@ -25,7 +24,7 @@ public class GoogleService {
         GeoApiContext context = new GeoApiContext().setApiKey(API_KEY);
         String[] destinations = new String[drugstoreList.size()];
         for (int i = 0; i < drugstoreList.size(); i++) {
-            destinations[i] = drugstoreList.get(i).getDrugstoreAddress();
+            destinations[i] = drugstoreList.get(i).getAddress();
         }
         DistanceMatrixApiRequest distanceMatrixApi = new DistanceMatrixApiRequest(context);
 

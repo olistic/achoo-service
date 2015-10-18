@@ -37,50 +37,23 @@ public class DrugstoresController {
     }
 
     /**
-     * Find all drugstores by name
+     * Find all drugstores that offer a product that has a name that contains namePart or a name that contains namePart
      *
      * @param namePart
-     * @return Drugstores with names that contain namePart
+     * @return The list of drugstores with that product.
      * @throws SQLException
      */
-    public static List<DrugstoreJPA> searchDrugstoresByName(String namePart, Double latitude, Double longitude) throws Exception {
+    public static List<DrugstoreJPA> searchDrugstoresByNameOrProductName(String namePart, Double latitude, Double longitude) throws Exception {
         DBConnector connector = DBConnector.getInstance();
         try {
             List<DrugstoreJPA> drugstores = new ArrayList<>();
             if (namePart != null) {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("%").append(namePart).append("%");
-                drugstores = connector.getContext().selectFrom(DRUGSTORE)
-                        .where(DRUGSTORE.NAME.like(stringBuilder.toString())).fetch().into(DrugstoreJPA.class);
-                if (latitude != null && longitude != null) {
-                    drugstores = GoogleService.orderDrugstoresByLocation(latitude, longitude, drugstores);
-                }
-            }
-            return drugstores;
-        } finally {
-            connector.closeConnection();
-        }
-    }
-
-    /**
-     * Find all drugstores that offer a product that has a name that contains productNamePart
-     *
-     * @param productNamePart
-     * @return The list of drugstores with that product.
-     * @throws SQLException
-     */
-    public static List<DrugstoreJPA> searchDrugstoresByProductName(String productNamePart, Double latitude, Double longitude) throws Exception {
-        DBConnector connector = DBConnector.getInstance();
-        try {
-            List<DrugstoreJPA> drugstores = new ArrayList<>();
-            if (productNamePart != null) {
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("%").append(productNamePart).append("%");
-                drugstores = connector.getContext().selectDistinct(PRODUCT.PRODUCT_ID,
-                        PRODUCT.PRODUCT_NAME, PRODUCT.PRODUCT_DESCRIPTION, PRODUCT.PRODUCT_UNITARY_PRICE,
-                        PRODUCT.PRODUCT_IMAGE_URL, DRUGSTORE.ID, DRUGSTORE.NAME, DRUGSTORE.PHONE_NUMBER,
-                        DRUGSTORE.ADDRESS).from(PRODUCT).join(DRUGSTORE).on(PRODUCT.DRUGSTORE_ID.equal(DRUGSTORE.ID))
-                        .where(PRODUCT.PRODUCT_NAME.like(stringBuilder.toString())).fetchInto(DrugstoreJPA.class);
+                drugstores = connector.getContext().selectDistinct(DRUGSTORE.ID, DRUGSTORE.NAME, DRUGSTORE.PHONE_NUMBER,
+                        DRUGSTORE.ADDRESS, DRUGSTORE.IMAGE_URL).from(PRODUCT).join(DRUGSTORE).on(PRODUCT.DRUGSTORE_ID.equal(DRUGSTORE.ID))
+                        .where(PRODUCT.PRODUCT_NAME.like(stringBuilder.toString())
+                                .or(DRUGSTORE.NAME.like(stringBuilder.toString()))).fetchInto(DrugstoreJPA.class);
                 if (latitude != null && longitude!= null) {
                     drugstores = GoogleService.orderDrugstoresByLocation(latitude, longitude, drugstores);
                 }
@@ -110,6 +83,20 @@ public class DrugstoresController {
             }
             return drugstores;
         } finally {
+            connector.closeConnection();
+        }
+    }
+
+    /**
+     * Read a drugstore from de database
+     * @param drugstoreId
+     * @return That drugstore
+     */
+    public static Drugstore readDrugstore(Integer drugstoreId){
+        DBConnector connector = DBConnector.getInstance();
+        try{
+            return new DrugstoreDao(connector.getConfiguration()).fetchOneById(drugstoreId);
+        }finally {
             connector.closeConnection();
         }
     }

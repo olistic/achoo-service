@@ -3,9 +3,9 @@ INSERT INTO user(first_name, last_name, email, password, salt) values('Mathias',
 INSERT INTO user(first_name, last_name, email, password, salt) values('Alfredo','El Ters', 'alfredoelters@gmail.com', 'n07B0NvWJchGEKomzkPhrVjBBcQ=', 'eOBrddD0VU8=');
 
 
-INSERT INTO drugstore(name, phone_number, address) values('Farmashop', '1234567', 'Priamo 1579, Montevideo, Uruguay');
-INSERT INTO drugstore(name, phone_number, address) values('Farmacia Paris', '1234567', 'Belgrano 2874, Montevideo, Uruguay');
-INSERT INTO drugstore(name, phone_number, address) values('Bristol', '1234567', 'Walcalde 2638, Montevideo, Uruguay');
+INSERT INTO drugstore(name, phone_number, address, image_url) values('Farmashop', '1234567', 'Priamo 1579, Montevideo, Uruguay', 'https://pbs.twimg.com/profile_images/378800000563025154/432294d87567d7a4d1bf3416f626b904_400x400.png');
+INSERT INTO drugstore(name, phone_number, address, image_url) values('Farmacia Paris', '1234567', 'Belgrano 2874, Montevideo, Uruguay', 'https://i.vimeocdn.com/video/519867953_640.jpg');
+INSERT INTO drugstore(name, phone_number, address, image_url) values('San Roque', '1234567', 'Walcalde 2638, Montevideo, Uruguay', 'http://espectadornegocios.com/media/xcore//2554_1291335531_logo_san_roque.jpg');
 
 INSERT INTO product(drugstore_id, product_name, product_description, product_unitary_price, product_image_url) values (1,'Perifar 400', 'Calmante', 45, 'http://mlu-s2-p.mlstatic.com/perifar-400-espasmo-flex-15810-MLU20110477655_062014-O.jpg');
 INSERT INTO product(drugstore_id, product_name, product_description, product_unitary_price, product_image_url) values (1,'Cataflam 50', 'Calmante muy fuerte', 100, 'https://www.rxstars.net/wp-content/uploads/2015/04/Cataflam-50mg.jpg');

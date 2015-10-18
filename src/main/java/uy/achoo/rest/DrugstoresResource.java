@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Alfredo El Ters
@@ -25,48 +26,34 @@ import java.util.List;
 public class DrugstoresResource {
 
     @GET
-    public Response index() {
+    public Response listDrugstores(@QueryParam("name") String productNamePart,
+                                   @QueryParam("latitude") Double latitude,
+                                   @QueryParam("longitude") Double longitude) {
         Response response;
         try {
-            List<Drugstore> drugstores = DrugstoresController.findAllDrugstores();
-            response = Response.status(200).entity(drugstores).build();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            response = Response.status(500).entity(null).build();
-        }
-        return response;
-    }
-
-    @GET
-    @Path("search")
-    public Response searchDrugstoresByProduct(@QueryParam("name") String productNamePart,
-                                              @QueryParam("latitude") Double latitude,
-                                              @QueryParam("longitude") Double longitude) {
-        Response response;
-        try {
-            List<DrugstoreJPA> drugstores = DrugstoresController.searchDrugstoresByProductName(productNamePart,
-                    latitude, longitude);
-            response = Response.status(200).entity(drugstores).build();
+            if(productNamePart == null){
+                List<Drugstore> drugstores = DrugstoresController.findAllDrugstores();
+                response = Response.status(200).entity(drugstores).build();
+            }else{
+                List<DrugstoreJPA> drugstores = DrugstoresController.searchDrugstoresByNameOrProductName(productNamePart,
+                        latitude, longitude);
+                response = Response.status(200).entity(drugstores).build();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response = Response.status(500).entity(null).build();
         }
         return response;
     }
-    /**
+
+
     @GET
-    @Path("search/product_id")
-    public Response searchDrugstoresByProduct(@QueryParam("id") Integer productId) {
-        Response response;
-        try {
-            List<Drugstore> drugstores = DrugstoresController.searchDrugstoresByProductId(productId);
-            response = Response.status(200).entity(drugstores).build();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            response = Response.status(500).entity(null).build();
-        }
+    @Path("{drugstoreId}")
+    public Response readDrugstore(@PathParam("drugstoreId") Integer drugstoreId) {
+        Drugstore drugstore = DrugstoresController.readDrugstore(drugstoreId);
+        Response response = Response.status(200).entity(drugstore).build();
         return response;
-    }**/
+    }
 
     @GET
     @Path("{drugstoreId}/orders")
