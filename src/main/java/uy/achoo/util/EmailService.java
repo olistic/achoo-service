@@ -3,7 +3,10 @@ package uy.achoo.util;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import javax.mail.*;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
@@ -28,7 +31,7 @@ public class EmailService {
             .getName());
 
     public static void sendRegistrationMail(String email, String firstName, String password)
-            throws MessagingException{
+            throws MessagingException {
 
         String subject = "Welcome " + firstName + " !";
 
@@ -44,7 +47,7 @@ public class EmailService {
 
 
     public static void sendResetPasswordMail(String email, String newPassword)
-            throws MessagingException{
+            throws MessagingException {
 
         String subject = "Password Reset";
         StringBuilder sb = new StringBuilder();
@@ -70,7 +73,7 @@ public class EmailService {
     }
 
     private static void sendMail(String email, String subject, String body) throws MessagingException {
-        if(validateEmail(email)) {
+        if (validateEmail(email)) {
             // Authentication properties
             Properties props = System.getProperties();
             props.put("mail.smtp.starttls.enable", true);
@@ -98,7 +101,7 @@ public class EmailService {
                     SMTP_PASSWORD);
             transport.sendMessage(message, message.getAllRecipients());
             logger.log(Level.INFO, "Email send!");
-        }else{
+        } else {
             logger.log(Level.WARN, "Invalid email!");
         }
     }

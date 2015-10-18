@@ -1,7 +1,6 @@
 package uy.achoo.rest;
 
 
-
 import uy.achoo.controller.ProductsController;
 import uy.achoo.model.tables.pojos.Product;
 
@@ -22,7 +21,7 @@ import java.util.List;
 public class ProductsResource {
 
     @GET
-    public Response listAllProducts(){
+    public Response listAllProducts() {
         Response response;
         try {
             List<Product> products = ProductsController.listAllProducts();

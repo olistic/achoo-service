@@ -3,9 +3,6 @@ package uy.achoo.controller;
 import org.jooq.BatchBindStep;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
-import org.jooq.impl.DefaultConfiguration;
 import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.database.DBConnector;
 import uy.achoo.model.tables.daos.OrderDao;
@@ -18,7 +15,6 @@ import uy.achoo.model.tables.records.OrderRecord;
 import uy.achoo.util.EmailService;
 
 import javax.mail.MessagingException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +38,10 @@ public class OrdersController {
      * @throws SQLException
      */
     public static Order createOrder(Order order, List<OrderLine> orderLines) throws SQLException, MessagingException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-            DSLContext context = DSL.using(configuration);
-
-            User orderUser = new UserDao(configuration).fetchOneById(order.getUserId());
+            DSLContext context = connector.getContext();
+            User orderUser = new UserDao(connector.getConfiguration()).fetchOneById(order.getUserId());
             if (orderUser != null) {
                 OrderRecord insertedOrder = insertOrder(order, context);
                 order.setId(insertedOrder.getId());
@@ -57,7 +51,7 @@ public class OrdersController {
             }
             return null;
         } finally {
-            connection.close();
+            connector.closeConnection();
         }
     }
 
@@ -87,14 +81,12 @@ public class OrdersController {
      * @throws SQLException
      */
     public static Integer rateOrder(Integer orderId, Integer score) throws SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-            DSLContext context = DSL.using(configuration);
-            context.update(ORDER).set(ORDER.SCORE, score).execute();
+            connector.getContext().update(ORDER).set(ORDER.SCORE, score).where(ORDER.ID.equal(orderId)).execute();
             return score;
         } finally {
-            connection.close();
+            connector.closeConnection();
         }
     }
 
@@ -106,15 +98,15 @@ public class OrdersController {
      * @throws SQLException
      */
     public static OrderAndOrderLinesWrapper readOrder(Integer orderId) throws SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
+            Configuration configuration = connector.getConfiguration();
             Order order = new OrderDao(configuration).fetchOneById(orderId);
             List<OrderLine> orderLines = new OrderLineDao(configuration).fetchByOrderId(orderId);
             return new OrderAndOrderLinesWrapper(order, orderLines);
         } finally {
             // Close the database connection
-            connection.close();
+            connector.closeConnection();
         }
     }
 
@@ -126,12 +118,12 @@ public class OrdersController {
      * @throws SQLException
      */
     public static List<OrderAndOrderLinesWrapper> findAllOrdersOfUser(Integer userId) throws SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
+            Configuration configuration = connector.getConfiguration();
             List<OrderAndOrderLinesWrapper> ordersAndOrderLines = new ArrayList<>();
             List<Order> orders = new OrderDao(configuration).fetchByUserId(userId);
-            OrderAndOrderLinesWrapper orderAndLines = null;
+            OrderAndOrderLinesWrapper orderAndLines;
             OrderLineDao orderLineDao = new OrderLineDao(configuration);
             // TODO : find a way to do it in a single query due to performance issues.
             for (Order order : orders) {
@@ -143,7 +135,7 @@ public class OrdersController {
             return ordersAndOrderLines;
         } finally {
             // Close the database connection
-            connection.close();
+            connector.closeConnection();
         }
     }
 
@@ -155,13 +147,12 @@ public class OrdersController {
      * @throws SQLException
      */
     public static List<OrderAndOrderLinesWrapper> findAllOrdersOfDrugStore(Integer drugstoreId) throws SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
+            Configuration configuration = connector.getConfiguration();
             List<OrderAndOrderLinesWrapper> ordersAndOrderLines = new ArrayList<>();
             List<Order> orders = new OrderDao(configuration).fetchByDrugstoreId(drugstoreId);
-            OrderAndOrderLinesWrapper orderAndLines = null;
-            List<OrderLine> orderLines;
+            OrderAndOrderLinesWrapper orderAndLines;
             OrderLineDao orderLineDao = new OrderLineDao(configuration);
             // TODO : find a way to do it in a single query due to performance issues.
             for (Order order : orders) {
@@ -173,7 +164,7 @@ public class OrdersController {
             return ordersAndOrderLines;
         } finally {
             // Close the database connection
-            connection.close();
+            connector.closeConnection();
         }
     }
 }

@@ -13,95 +13,69 @@ import javax.persistence.Column;
 public class DrugstoreJPA {
     private static final long serialVersionUID = 1785879361;
 
-    @Column(name ="id")
-    private Integer id;
-    @Column(name ="name")
-    private String  name;
-    @Column(name ="phone_number")
-    private String  phoneNumber;
-    @Column(name ="address")
-    private String  address;
+    @Column(name = "id")
+    private Integer drugstoreId;
+    @Column(name = "name")
+    private String drugstoreName;
+    @Column(name = "phone_number")
+    private String drugstorePhoneNumber;
+    @Column(name = "address")
+    private String drugstoreAddress;
 
+    @Column(name = "product_id")
+    private Integer productId;
     @Column(name = "product_name")
     private String productName;
     @Column(name = "product_description")
     private String productDescription;
     @Column(name = "product_unitary_price")
-    private Double unitaryPrice;
+    private Double productUnitaryPrice;
+    @Column(name = "product_image_url")
+    private String productImageUrl;
 
     private Long distanceFromOrigin;
 
     public DrugstoreJPA() {}
 
-    public DrugstoreJPA(DrugstoreJPA value) {
-        this.id = value.id;
-        this.name = value.name;
-        this.phoneNumber = value.phoneNumber;
-        this.address = value.address;
-    }
 
     public DrugstoreJPA(
             Integer id,
-            String  name,
-            String  phoneNumber,
-            String  address
+            String name,
+            String phoneNumber,
+            String address
     ) {
-        this.id = id;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
+        this.setDrugstoreId(id);
+        this.setDrugstoreName(name);
+        this.setDrugstorePhoneNumber(phoneNumber);
+        this.setDrugstoreAddress(address);
     }
 
-    public DrugstoreJPA(Drugstore drugstoreJooq){
-        this.id = drugstoreJooq.getId();
-        this.name = drugstoreJooq.getName();
-        this.phoneNumber = drugstoreJooq.getAddress();
-        this.address = drugstoreJooq.getAddress();
+    public DrugstoreJPA(Drugstore drugstoreJooq) {
+        this.setDrugstoreId(drugstoreJooq.getId());
+        this.setDrugstoreName(drugstoreJooq.getName());
+        this.setDrugstorePhoneNumber(drugstoreJooq.getAddress());
+        this.setDrugstoreAddress(drugstoreJooq.getAddress());
     }
 
-    public Integer getId() {
-        return this.id;
+
+
+
+    public Long getDistanceFromOrigin() {
+        return distanceFromOrigin;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setDistanceFromOrigin(Long distanceFromOrigin) {
+        this.distanceFromOrigin = distanceFromOrigin;
     }
 
-    public String getName() {
-        return this.name;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
-    public String getPhoneNumber() {
-        return this.phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getAddress() {
-        return this.address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Long getDistanceFromOrigin() {return distanceFromOrigin;}
-
-    public void setDistanceFromOrigin(Long distanceFromOrigin) {this.distanceFromOrigin = distanceFromOrigin;}
-
-    public String getProductName() {return productName;}
-
-    public void setProductName(String productName) {this.productName = productName;}
-
-    public Double getUnitaryPrice() {return unitaryPrice;}
-
-    public void setUnitaryPrice(Double unitaryPrice) {this.unitaryPrice = unitaryPrice;}
 
     public String getProductDescription() {
         return productDescription;
@@ -110,4 +84,54 @@ public class DrugstoreJPA {
     public void setProductDescription(String productDescription) {
         this.productDescription = productDescription;
     }
+
+    public Integer getDrugstoreId() {
+        return drugstoreId;
+    }
+
+    public void setDrugstoreId(Integer drugstoreId) {
+        this.drugstoreId = drugstoreId;
+    }
+
+    public String getDrugstoreName() {
+        return drugstoreName;
+    }
+
+    public void setDrugstoreName(String drugstoreName) {
+        this.drugstoreName = drugstoreName;
+    }
+
+    public String getDrugstorePhoneNumber() {
+        return drugstorePhoneNumber;
+    }
+
+    public void setDrugstorePhoneNumber(String drugstorePhoneNumber) {this.drugstorePhoneNumber = drugstorePhoneNumber;}
+
+    public String getDrugstoreAddress() {
+        return drugstoreAddress;
+    }
+
+    public void setDrugstoreAddress(String drugstoreAddress) {
+        this.drugstoreAddress = drugstoreAddress;
+    }
+
+    public Double getProductUnitaryPrice() {
+        return productUnitaryPrice;
+    }
+
+    public void setProductUnitaryPrice(Double productUnitaryPrice) {
+        this.productUnitaryPrice = productUnitaryPrice;
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public String getProductImageUrl() {return productImageUrl;}
+
+    public void setProductImageUrl(String productImageUrl) {this.productImageUrl = productImageUrl;}
 }

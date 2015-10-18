@@ -1,8 +1,8 @@
 package uy.achoo.rest;
 
 import com.sun.jersey.spi.container.ResourceFilters;
-import uy.achoo.controller.OrdersController;
 import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
+import uy.achoo.controller.OrdersController;
 import uy.achoo.rest.util.AuthenticationRequiredFilter;
 
 import javax.mail.MessagingException;
@@ -28,7 +28,7 @@ public class OrdersResource {
         try {
             OrdersController.createOrder(orderAndOrderLines.getOrder(), orderAndOrderLines.getOrderLines());
             response = Response.status(200).entity(orderAndOrderLines).build();
-        } catch (SQLException | NullPointerException |MessagingException e) {
+        } catch (SQLException | NullPointerException | MessagingException e) {
             e.printStackTrace();
             response = Response.status(500).entity(null).build();
         }

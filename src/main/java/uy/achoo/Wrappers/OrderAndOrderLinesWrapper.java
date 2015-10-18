@@ -12,14 +12,15 @@ import java.util.List;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
- *
- * Auxiliary class to wrap an order with its order lines
+ *         <p>
+ *         Auxiliary class to wrap an order with its order lines
  */
-public class OrderAndOrderLinesWrapper implements Serializable{
+public class OrderAndOrderLinesWrapper implements Serializable {
     private Order order;
     private List<OrderLine> orderLines;
 
-    public OrderAndOrderLinesWrapper(){}
+    public OrderAndOrderLinesWrapper() {
+    }
 
     public OrderAndOrderLinesWrapper(Order order, List<OrderLine> orderLines) {
         this.order = order;

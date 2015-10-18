@@ -1,20 +1,20 @@
 package uy.achoo.controller;
 
-import org.jooq.Configuration;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DefaultConfiguration;
+import org.jooq.DSLContext;
 import uy.achoo.database.DBConnector;
 import uy.achoo.model.tables.daos.UserDao;
 import uy.achoo.model.tables.pojos.User;
+import uy.achoo.model.tables.records.UserRecord;
 import uy.achoo.util.DigestUtils;
 import uy.achoo.util.EmailService;
 import uy.achoo.util.PasswordGenerator;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+
+import static uy.achoo.model.Tables.USER;
 
 /**
  * @author Alfredo El Ters
@@ -26,6 +26,7 @@ public class UsersController {
 
     /**
      * Create a new user in the database
+     *
      * @param user
      * @return The created user
      * @throws NoSuchAlgorithmException
@@ -33,38 +34,43 @@ public class UsersController {
      * @throws SQLException
      */
     public static User createUser(User user) throws NoSuchAlgorithmException, UnsupportedEncodingException, SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-            UserDao userDao = new UserDao(configuration);
             byte[] salt = DigestUtils.getSalt();
             user.setPassword(DigestUtils.digestPassword(user.getPassword(), salt));
             user.setSalt(DigestUtils.byteToBase64(salt));
-            userDao.insert(user);
+            UserRecord insertedUser = insertUser(user, connector.getContext());
+            user.setId(insertedUser.getId());
             return user;
         } finally {
-            connection.close();
+            connector.closeConnection();
         }
+    }
+
+    private static UserRecord insertUser(User user, DSLContext context) {
+        return context.insertInto(USER, USER.EMAIL, USER.FIRST_NAME, USER.LAST_NAME, USER.PASSWORD, USER.SALT)
+                .values(user.getEmail(), user.getFirstName(), user.getLastName(), user.getPassword(), user.getSalt())
+                .returning(USER.ID).fetchOne();
     }
 
     /**
      * Find all users in the database
+     *
      * @return Users found
      * @throws SQLException
      */
     public static List<User> findAllUsers() throws SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-            List<User> users = new UserDao(configuration).findAll();
-            return users;
+            return new UserDao(connector.getConfiguration()).findAll();
         } finally {
-            connection.close();
+            connector.closeConnection();
         }
     }
 
     /**
      * Check if the user password is correct.
+     *
      * @param email
      * @param password
      * @return Whether the user´s password is correct or not
@@ -73,23 +79,23 @@ public class UsersController {
      * @throws SQLException
      */
     public static boolean checkUsersPassword(String email, String password) throws UnsupportedEncodingException, NoSuchAlgorithmException, SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
             boolean result = false;
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-            User user = new UserDao(configuration).fetchOneByEmail(email);
+            User user = new UserDao(connector.getConfiguration()).fetchOneByEmail(email);
             if (user != null) {
                 String hashedPassword = DigestUtils.digestPassword(password, DigestUtils.base64toBytes(user.getSalt()));
                 result = hashedPassword.equals(user.getPassword());
             }
             return result;
         } finally {
-            connection.close();
+            connector.closeConnection();
         }
     }
 
     /**
      * Fetch user by email and password
+     *
      * @param email
      * @param password
      * @return Whether the user´s password is correct or not
@@ -98,33 +104,32 @@ public class UsersController {
      * @throws SQLException
      */
     public static User fetchUserByEmailAndPassword(String email, String password) throws UnsupportedEncodingException, NoSuchAlgorithmException, SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-            User user = new UserDao(configuration).fetchOneByEmail(email);
+            User user = new UserDao(connector.getConfiguration()).fetchOneByEmail(email);
             if (user != null) {
                 String hashedPassword = DigestUtils.digestPassword(password, DigestUtils.base64toBytes(user.getSalt()));
-                if(hashedPassword.equals(user.getPassword())){
+                if (hashedPassword.equals(user.getPassword())) {
                     return user;
                 }
             }
             return null;
         } finally {
-            connection.close();
+            connector.closeConnection();
         }
     }
 
     /**
      * Reset the password of a user
+     *
      * @param email
      * @return The new password
      */
     public static String resetPassword(String email) throws UnsupportedEncodingException, NoSuchAlgorithmException, SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
             String result = null;
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-            UserDao userDao = new UserDao(configuration);
+            UserDao userDao = new UserDao(connector.getConfiguration());
             User user = userDao.fetchOneByEmail(email);
             if (user != null) {
                 String newPassword = PasswordGenerator.generatePassword(8);
@@ -135,23 +140,23 @@ public class UsersController {
             }
             return result;
         } finally {
-            connection.close();
+            connector.closeConnection();
         }
     }
 
     /**
      * Check if an email is available for use
+     *
      * @param email
      * @return Whether the email is available or not
      */
     public static Boolean isEmailAvailable(String email) throws SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-            UserDao userDao = new UserDao(configuration);
+            UserDao userDao = new UserDao(connector.getConfiguration());
             return EmailService.validateEmail(email) && userDao.fetchOneByEmail(email) == null;
         } finally {
-            connection.close();
+            connector.closeConnection();
         }
     }
 }

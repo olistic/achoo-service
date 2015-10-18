@@ -48,7 +48,7 @@ public class AuthFilter implements ContainerRequestFilter {
         try {
             if (UsersController.checkUsersPassword(email, password))
                 return containerRequest;
-        } catch (UnsupportedEncodingException|NoSuchAlgorithmException|SQLException e) {
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException | SQLException e) {
             e.printStackTrace();
         }
         throw UNAUTTHORIZED;

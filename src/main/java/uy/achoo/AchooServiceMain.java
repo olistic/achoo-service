@@ -13,7 +13,6 @@ import com.twitter.common.net.http.GuiceServletConfig;
 import com.twitter.common.net.http.HttpServerDispatch;
 import org.mortbay.jetty.servlet.Context;
 import uy.achoo.rest.RestModule;
-import uy.achoo.rest.util.AuthFilter;
 
 import javax.inject.Inject;
 import java.sql.Connection;

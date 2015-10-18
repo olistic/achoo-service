@@ -1,6 +1,5 @@
 package uy.achoo.rest;
 
-import com.sun.jersey.spi.container.ResourceFilters;
 import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.controller.DrugstoresController;
 import uy.achoo.controller.OrdersController;
@@ -41,10 +40,12 @@ public class DrugstoresResource {
     @GET
     @Path("search")
     public Response searchDrugstoresByProduct(@QueryParam("name") String productNamePart,
-                                              @QueryParam("address") String address) {
+                                              @QueryParam("latitude") Double latitude,
+                                              @QueryParam("longitude") Double longitude) {
         Response response;
         try {
-            List<DrugstoreJPA> drugstores = DrugstoresController.searchDrugstoresByProductName(productNamePart, address);
+            List<DrugstoreJPA> drugstores = DrugstoresController.searchDrugstoresByProductName(productNamePart,
+                    latitude, longitude);
             response = Response.status(200).entity(drugstores).build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,7 +53,7 @@ public class DrugstoresResource {
         }
         return response;
     }
-
+    /**
     @GET
     @Path("search/product_id")
     public Response searchDrugstoresByProduct(@QueryParam("id") Integer productId) {
@@ -65,7 +66,7 @@ public class DrugstoresResource {
             response = Response.status(500).entity(null).build();
         }
         return response;
-    }
+    }**/
 
     @GET
     @Path("{drugstoreId}/orders")

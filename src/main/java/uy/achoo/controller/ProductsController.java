@@ -1,15 +1,9 @@
 package uy.achoo.controller;
 
-import org.jooq.Configuration;
-import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
-import org.jooq.impl.DefaultConfiguration;
 import uy.achoo.database.DBConnector;
 import uy.achoo.model.tables.daos.ProductDao;
 import uy.achoo.model.tables.pojos.Product;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +25,11 @@ public class ProductsController {
      * @throws SQLException
      */
     public static Product readProduct(int productId) throws SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-            return new ProductDao(configuration).findById(productId);
+            return new ProductDao(connector.getConfiguration()).findById(productId);
         } finally {
-            connection.close();
+            connector.closeConnection();
         }
     }
 
@@ -48,12 +41,11 @@ public class ProductsController {
      * @throws SQLException
      */
     public static List<Product> searchAllProductsOfDrugstor(int durgstoreId) throws SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-            return new ProductDao(configuration).fetchByDrugstoreId(durgstoreId);
+            return new ProductDao(connector.getConfiguration()).fetchByDrugstoreId(durgstoreId);
         } finally {
-            connection.close();
+            connector.closeConnection();
         }
     }
 
@@ -64,12 +56,11 @@ public class ProductsController {
      * @throws SQLException
      */
     public static List<Product> listAllProducts() throws SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-            return new ProductDao(configuration).findAll();
+            return new ProductDao(connector.getConfiguration()).findAll();
         } finally {
-            connection.close();
+            connector.closeConnection();
         }
     }
 
@@ -81,19 +72,18 @@ public class ProductsController {
      * @throws SQLException
      */
     public static List<Product> searchProductsByName(String namePart) throws SQLException {
-        Connection connection = DBConnector.getInstance().connection();
+        DBConnector connector = DBConnector.getInstance();
         try {
-            Configuration configuration = new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
-            DSLContext context = DSL.using(configuration);
             List<Product> products = new ArrayList<>();
             if (namePart != null) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("%").append(namePart).append("%");
-                products = context.selectFrom(PRODUCT).where(PRODUCT.PRODUCT_NAME.like(sb.toString())).fetchInto(Product.class);
+                products = connector.getContext().selectFrom(PRODUCT)
+                        .where(PRODUCT.PRODUCT_NAME.like(sb.toString())).fetchInto(Product.class);
             }
             return products;
         } finally {
-            connection.close();
+            connector.closeConnection();
         }
     }
 }
