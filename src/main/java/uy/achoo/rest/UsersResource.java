@@ -1,12 +1,15 @@
 package uy.achoo.rest;
 
 import com.sun.jersey.spi.container.ResourceFilters;
+import org.jooq.util.derby.sys.Sys;
+import uy.achoo.Wrappers.JWTWrapper;
 import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.UsersController;
 import uy.achoo.model.tables.pojos.User;
 import uy.achoo.rest.util.AuthenticationRequiredFilter;
 import uy.achoo.util.EmailService;
+import uy.achoo.util.JWTUtils;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -23,6 +26,8 @@ import java.util.List;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
+ *
+ * Users endpoint
  */
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -46,7 +51,6 @@ public class UsersResource {
     }
 
     @POST
-//    @ResourceFilters(AuthenticationRequiredFilter.class)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(User user) {
         Response response;
@@ -82,21 +86,6 @@ public class UsersResource {
     }
 
     @POST
-    @Path("authenticate")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response authenticate(@FormParam("email") String email, @FormParam("password") String password) {
-        Response response;
-        try {
-            User authenticatedUser = UsersController.fetchUserByEmailAndPassword(email, password);
-            response = Response.status(200).entity(authenticatedUser).build();
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException | SQLException e) {
-            e.printStackTrace();
-            response = Response.status(500).entity(null).build();
-        }
-        return response;
-    }
-
-    @POST
     @Path("reset-password")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response resetPassword(@FormParam("email") String email) {
@@ -115,7 +104,7 @@ public class UsersResource {
     }
 
     @GET
-    @Path("available_email")
+    @Path("available-email")
     public Response isEmailAvailable(@QueryParam("email") String email) {
         Response response;
         try {

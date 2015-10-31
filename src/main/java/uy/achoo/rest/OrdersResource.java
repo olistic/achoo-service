@@ -37,12 +37,13 @@ public class OrdersResource {
 
     @PUT
     @ResourceFilters(AuthenticationRequiredFilter.class)
-    @Path("rate")
+    @Path("{orderId}/score")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response rate(@FormParam("orderId") Integer orderId, @FormParam("score") Integer score) {
+    public Response rate(@PathParam("orderId") Integer orderId, @FormParam("score") Integer score) {
         Response response;
         try {
-            OrdersController.rateOrder(orderId, score);
+            if (score <= 5 && score >= 0)
+                OrdersController.rateOrder(orderId, score);
             response = Response.status(200).entity(score).build();
         } catch (SQLException e) {
             e.printStackTrace();

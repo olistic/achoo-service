@@ -16,6 +16,8 @@ import java.util.logging.Logger;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
+ *
+ * Mapper to display JSON map exceptions
  */
 @Provider
 public class JsonExceptionMapper implements ExceptionMapper<Exception> {

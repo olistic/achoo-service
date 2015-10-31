@@ -6,12 +6,13 @@ import javax.servlet.*;
 import java.io.IOException;
 
 /**
- * A servlet filter that uses Twitter Commons request stats to keep tabs on requests
  *
  * @author Alfredo El Ters
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
+ *
+ * A servlet filter that uses Twitter Commons request stats to keep tabs on requests
  */
 public final class RequestStatsFilter implements Filter {
 

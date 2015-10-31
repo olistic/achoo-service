@@ -1,6 +1,6 @@
 package uy.achoo.customModel;
 
-import uy.achoo.model.tables.pojos.Drugstore;
+import uy.achoo.model.tables.pojos.Pharmacy;
 
 import javax.persistence.Column;
 
@@ -10,7 +10,7 @@ import javax.persistence.Column;
  * @author Mathías Cabano
  * @author Matías Olivera
  */
-public class DrugstoreJPA {
+public class PharmacyJPA {
     private static final long serialVersionUID = 1785879361;
 
     @Column(name = "id")
@@ -27,10 +27,13 @@ public class DrugstoreJPA {
 
     private Long distanceFromOrigin;
 
-    public DrugstoreJPA() {}
+    @Column (name = "average_score")
+    private Double averageScore;
+
+    public PharmacyJPA() {}
 
 
-    public DrugstoreJPA(
+    public PharmacyJPA(
             Integer id,
             String name,
             String phoneNumber,
@@ -44,21 +47,12 @@ public class DrugstoreJPA {
         this.setImageUrl(imageUrl);
     }
 
-    public DrugstoreJPA(Drugstore drugstoreJooq) {
-        this.setId(drugstoreJooq.getId());
-        this.setName(drugstoreJooq.getName());
-        this.setPhoneNumber(drugstoreJooq.getAddress());
-        this.setAddress(drugstoreJooq.getAddress());
-        this.setImageUrl(drugstoreJooq.getImageUrl());
-    }
-
-
-    public Long getDistanceFromOrigin() {
-        return distanceFromOrigin;
-    }
-
-    public void setDistanceFromOrigin(Long distanceFromOrigin) {
-        this.distanceFromOrigin = distanceFromOrigin;
+    public PharmacyJPA(Pharmacy pharmacyJooq) {
+        this.setId(pharmacyJooq.getId());
+        this.setName(pharmacyJooq.getName());
+        this.setPhoneNumber(pharmacyJooq.getAddress());
+        this.setAddress(pharmacyJooq.getAddress());
+        this.setImageUrl(pharmacyJooq.getImageUrl());
     }
 
 
@@ -95,4 +89,16 @@ public class DrugstoreJPA {
     public String getImageUrl() {return imageUrl;}
 
     public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
+
+    public Double getAverageScore() {return averageScore;}
+
+    public void setAverageScore(Double averageScore) {this.averageScore = averageScore;}
+
+    public Long getDistanceFromOrigin() {
+        return distanceFromOrigin;
+    }
+
+    public void setDistanceFromOrigin(Long distanceFromOrigin) {
+        this.distanceFromOrigin = distanceFromOrigin;
+    }
 }

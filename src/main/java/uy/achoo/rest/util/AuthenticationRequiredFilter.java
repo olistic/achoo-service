@@ -5,12 +5,17 @@ import com.sun.jersey.spi.container.ContainerResponseFilter;
 import com.sun.jersey.spi.container.ResourceFilter;
 
 /**
- * Created by alfredo on 04/10/15.
+ * @author Alfredo El Ters
+ * @author Diego Muracciole
+ * @author Mathías Cabano
+ * @author Matías Olivera
+ *
+ * Filter for resources that require authentication
  */
 public class AuthenticationRequiredFilter implements ResourceFilter {
     @Override
     public ContainerRequestFilter getRequestFilter() {
-        return new AuthFilter();
+        return new JWTFilter();
     }
 
     @Override

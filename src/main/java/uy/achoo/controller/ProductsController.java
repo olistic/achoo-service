@@ -34,16 +34,16 @@ public class ProductsController {
     }
 
     /**
-     * Find all the products of a drugstore
+     * Find all the products of a pharmacy
      *
-     * @param durgstoreId
-     * @return The products of the drugstore
+     * @param pharmacyId
+     * @return The products of the pharmacy
      * @throws SQLException
      */
-    public static List<Product> searchAllProductsOfDrugstor(int durgstoreId) throws SQLException {
+    public static List<Product> searchAllProductsOfDrugstor(int pharmacyId) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
         try {
-            return new ProductDao(connector.getConfiguration()).fetchByDrugstoreId(durgstoreId);
+            return new ProductDao(connector.getConfiguration()).fetchByPharmacyId(pharmacyId);
         } finally {
             connector.closeConnection();
         }
@@ -52,7 +52,7 @@ public class ProductsController {
     /**
      * Lists all the products
      *
-     * @return The products of the drugstore
+     * @return The products of the pharmacy
      * @throws SQLException
      */
     public static List<Product> listAllProducts() throws SQLException {
@@ -79,7 +79,7 @@ public class ProductsController {
                 StringBuilder sb = new StringBuilder();
                 sb.append("%").append(namePart).append("%");
                 products = connector.getContext().selectFrom(PRODUCT)
-                        .where(PRODUCT.PRODUCT_NAME.like(sb.toString())).fetchInto(Product.class);
+                        .where(PRODUCT.NAME.like(sb.toString())).fetchInto(Product.class);
             }
             return products;
         } finally {

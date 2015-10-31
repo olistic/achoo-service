@@ -78,13 +78,14 @@ public class UsersController {
      * @throws NoSuchAlgorithmException
      * @throws SQLException
      */
-    public static boolean checkUsersPassword(String email, String password) throws UnsupportedEncodingException, NoSuchAlgorithmException, SQLException {
+    public static boolean checkUsersPassword(String email, String password, boolean passwordAlreadyHashed) throws UnsupportedEncodingException, NoSuchAlgorithmException, SQLException {
         DBConnector connector = DBConnector.getInstance();
         try {
             boolean result = false;
             User user = new UserDao(connector.getConfiguration()).fetchOneByEmail(email);
             if (user != null) {
-                String hashedPassword = DigestUtils.digestPassword(password, DigestUtils.base64toBytes(user.getSalt()));
+                String hashedPassword = passwordAlreadyHashed ? password :
+                        DigestUtils.digestPassword(password, DigestUtils.base64toBytes(user.getSalt()));
                 result = hashedPassword.equals(user.getPassword());
             }
             return result;

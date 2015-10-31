@@ -31,8 +31,9 @@ public class RestModule extends ServletModule {
 
         // The actual REST Endpoints
         bind(UsersResource.class).in(Singleton.class);
+        bind(SessionsResource.class).in(Singleton.class);
         bind(OrdersResource.class).in(Singleton.class);
-        bind(DrugstoresResource.class).in(Singleton.class);
+        bind(PharmaciesResource.class).in(Singleton.class);
         bind(ProductsResource.class).in(Singleton.class);
 
         // Stats

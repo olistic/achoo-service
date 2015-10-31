@@ -56,8 +56,8 @@ public class OrdersController {
     }
 
     private static OrderRecord insertOrder(Order order, DSLContext context) {
-        return context.insertInto(ORDER, ORDER.DRUGSTORE_ID, ORDER.USER_ID, ORDER.DATE, ORDER.SCORE)
-                .values(order.getDrugstoreId(), order.getUserId(), order.getDate(), order.getScore())
+        return context.insertInto(ORDER, ORDER.PHARMACY_ID, ORDER.USER_ID, ORDER.DATE, ORDER.SCORE)
+                .values(order.getPharmacyId(), order.getUserId(), order.getDate(), order.getScore())
                 .returning(ORDER.ID).fetchOne();
     }
 
@@ -140,18 +140,18 @@ public class OrdersController {
     }
 
     /**
-     * Find all orders made to a drugstore
+     * Find all orders made to a pharmacy
      *
-     * @param drugstoreId
-     * @return The orders made to the drugstore
+     * @param pharmacyId
+     * @return The orders made to the pharmacy
      * @throws SQLException
      */
-    public static List<OrderAndOrderLinesWrapper> findAllOrdersOfDrugStore(Integer drugstoreId) throws SQLException {
+    public static List<OrderAndOrderLinesWrapper> findAllOrdersOfDrugStore(Integer pharmacyId) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
         try {
             Configuration configuration = connector.getConfiguration();
             List<OrderAndOrderLinesWrapper> ordersAndOrderLines = new ArrayList<>();
-            List<Order> orders = new OrderDao(configuration).fetchByDrugstoreId(drugstoreId);
+            List<Order> orders = new OrderDao(configuration).fetchByPharmacyId(pharmacyId);
             OrderAndOrderLinesWrapper orderAndLines;
             OrderLineDao orderLineDao = new OrderLineDao(configuration);
             // TODO : find a way to do it in a single query due to performance issues.

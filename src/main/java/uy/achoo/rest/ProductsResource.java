@@ -15,6 +15,8 @@ import java.util.List;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
+ *
+ * Products endpoint
  */
 @Path("/products")
 @Produces(MediaType.APPLICATION_JSON)

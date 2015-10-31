@@ -73,37 +73,43 @@ public class EmailService {
     }
 
     private static void sendMail(String email, String subject, String body) throws MessagingException {
-        if (validateEmail(email)) {
-            // Authentication properties
-            Properties props = System.getProperties();
-            props.put("mail.smtp.starttls.enable", true);
-            props.put("mail.smtp.host", SMTP_HOST);
-            props.put("mail.smtp.user", SMTP_USER);
-            props.put("mail.smtp.password", SMTP_PASSWORD);
-            props.put("mail.smtp.port", "25");
-            props.put("mail.smtp.auth", true);
+        new Thread(() -> {
+            if (validateEmail(email)) {
+                try {
+                    // Authentication properties
+                    Properties props = System.getProperties();
+                    props.put("mail.smtp.starttls.enable", true);
+                    props.put("mail.smtp.host", SMTP_HOST);
+                    props.put("mail.smtp.user", SMTP_USER);
+                    props.put("mail.smtp.password", SMTP_PASSWORD);
+                    props.put("mail.smtp.port", "25");
+                    props.put("mail.smtp.auth", true);
 
-            logger.log(Level.INFO, "Authenticating with SMTP Server");
-            Session session = Session.getInstance(props, null);
-            MimeMessage message = new MimeMessage(session);
-            logger.log(Level.INFO, "Crating email");
+                    logger.log(Level.INFO, "Authenticating with SMTP Server");
+                    Session session = Session.getInstance(props, null);
+                    MimeMessage message = new MimeMessage(session);
+                    logger.log(Level.INFO, "Crating email");
 
-            InternetAddress from = new InternetAddress(SMTP_USER);
-            message.setSubject(subject);
-            message.setFrom(from);
-            message.addRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(email));
-            message.setContent(body, "text/html");
-            // Send message
-            logger.log(Level.INFO, "Sending email ...");
-            Transport transport = session.getTransport("smtp");
-            transport.connect(SMTP_HOST, SMTP_USER,
-                    SMTP_PASSWORD);
-            transport.sendMessage(message, message.getAllRecipients());
-            logger.log(Level.INFO, "Email send!");
-        } else {
-            logger.log(Level.WARN, "Invalid email!");
-        }
+                    InternetAddress from = new InternetAddress(SMTP_USER);
+                    message.setSubject(subject);
+                    message.setFrom(from);
+                    message.addRecipients(Message.RecipientType.TO,
+                            InternetAddress.parse(email));
+                    message.setContent(body, "text/html");
+                    // Send message
+                    logger.log(Level.INFO, "Sending email ...");
+                    Transport transport = session.getTransport("smtp");
+                    transport.connect(SMTP_HOST, SMTP_USER,
+                            SMTP_PASSWORD);
+                    transport.sendMessage(message, message.getAllRecipients());
+                    logger.log(Level.INFO, "Email send!");
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                logger.log(Level.WARN, "Invalid email!");
+            }
+        }).start();
     }
 
 
