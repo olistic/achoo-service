@@ -9,8 +9,11 @@ import javax.persistence.Column;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
+ *
+ * Pharmacy with custom fields. This is necesary because JOOQ's POJOs can only contain fields that are direclty mapped
+ * to physical database columns.
  */
-public class PharmacyJPA {
+public class CustomPharmacy {
     private static final long serialVersionUID = 1785879361;
 
     @Column(name = "id")
@@ -24,22 +27,16 @@ public class PharmacyJPA {
     @Column(name= "image_url")
     private String imageUrl;
 
+    @Column (name = "average_score")
+    private Double score;
 
     private Long distanceFromOrigin;
 
-    @Column (name = "average_score")
-    private Double averageScore;
 
-    public PharmacyJPA() {}
+    public CustomPharmacy() {}
 
 
-    public PharmacyJPA(
-            Integer id,
-            String name,
-            String phoneNumber,
-            String address,
-            String imageUrl
-    ) {
+    public CustomPharmacy(Integer id, String name, String phoneNumber, String address, String imageUrl) {
         this.setId(id);
         this.setName(name);
         this.setPhoneNumber(phoneNumber);
@@ -47,7 +44,7 @@ public class PharmacyJPA {
         this.setImageUrl(imageUrl);
     }
 
-    public PharmacyJPA(Pharmacy pharmacyJooq) {
+    public CustomPharmacy(Pharmacy pharmacyJooq) {
         this.setId(pharmacyJooq.getId());
         this.setName(pharmacyJooq.getName());
         this.setPhoneNumber(pharmacyJooq.getAddress());
@@ -90,9 +87,9 @@ public class PharmacyJPA {
 
     public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 
-    public Double getAverageScore() {return averageScore;}
+    public Double getScore() {return score;}
 
-    public void setAverageScore(Double averageScore) {this.averageScore = averageScore;}
+    public void setScore(Double score) {this.score = score;}
 
     public Long getDistanceFromOrigin() {
         return distanceFromOrigin;

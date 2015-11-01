@@ -5,10 +5,9 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
 import com.auth0.jwt.internal.org.apache.commons.codec.binary.Base64;
 import com.sun.jersey.spi.container.ContainerRequest;
-import uy.achoo.model.tables.pojos.User;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -49,8 +48,17 @@ public class JWTUtils {
     }
 
     public static String getTokenFromRequest(ContainerRequest containerRequest) throws ServletException {
-        String token = null;
         final String authorizationHeader = containerRequest.getHeaderValue("authorization");
+        return extractTokenFromAuthorization(authorizationHeader);
+    }
+
+    public static String getTokenFromHeaders(HttpHeaders headers) throws ServletException {
+        final String authorizationHeader = headers.getRequestHeaders().getFirst("authorization");
+        return extractTokenFromAuthorization(authorizationHeader);
+    }
+
+    private static String extractTokenFromAuthorization(String authorizationHeader) throws ServletException {
+        String token = null;
         if (authorizationHeader == null) {
             throw new ServletException("Unauthorized: No Authorization header was found");
         }

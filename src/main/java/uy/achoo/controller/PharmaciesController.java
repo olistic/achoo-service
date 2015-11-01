@@ -1,7 +1,6 @@
 package uy.achoo.controller;
 
-import org.jooq.DSLContext;
-import uy.achoo.customModel.PharmacyJPA;
+import uy.achoo.customModel.CustomPharmacy;
 import uy.achoo.database.DBConnector;
 import uy.achoo.model.tables.daos.PharmacyDao;
 import uy.achoo.model.tables.pojos.Pharmacy;
@@ -43,10 +42,10 @@ public class PharmaciesController {
      * @return The list of pharmacies with that product.
      * @throws SQLException
      */
-    public static List<PharmacyJPA> searchPharmaciesByNameOrProductName(String namePart, Double latitude, Double longitude) throws Exception {
+    public static List<CustomPharmacy> searchPharmaciesByNameOrProductName(String namePart, Double latitude, Double longitude) throws Exception {
         DBConnector connector = DBConnector.getInstance();
         try {
-            List<PharmacyJPA> pharmacies = new ArrayList<>();
+            List<CustomPharmacy> pharmacies = new ArrayList<>();
             if (namePart != null) {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("%").append(namePart).append("%");
@@ -56,7 +55,7 @@ public class PharmaciesController {
                         .leftOuterJoin(ORDER).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID))
                         .where(PRODUCT.NAME.like(stringBuilder.toString())
                                 .or(PHARMACY.NAME.like(stringBuilder.toString())))
-                        .groupBy(PHARMACY.ID).fetchInto(PharmacyJPA.class);
+                        .groupBy(PHARMACY.ID).fetchInto(CustomPharmacy.class);
                 if (latitude != null && longitude!= null) {
                     pharmacies = GoogleService.orderPharmaciesByLocation(latitude, longitude, pharmacies);
                 }
@@ -69,36 +68,19 @@ public class PharmaciesController {
 
 
     /**
-     * Find all pharmacies that offer the product with id equal to productId
-     *
-     * @param productId
-     * @return The list of dugstores that offer that product.
-     * @throws SQLException
-     */
-    public static List<Pharmacy> searchPharmaciesByProductId(Integer productId) throws SQLException {
-        DBConnector connector = DBConnector.getInstance();
-        try {
-            List<Pharmacy> pharmacies = new ArrayList<>();
-            if (productId != null) {
-                pharmacies = connector.getContext().selectDistinct(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER, PHARMACY.ADDRESS).
-                        from(PRODUCT).join(PHARMACY).on(PRODUCT.PHARMACY_ID.equal(PHARMACY.ID))
-                        .where(PRODUCT.ID.equal(productId)).fetchInto(Pharmacy.class);
-            }
-            return pharmacies;
-        } finally {
-            connector.closeConnection();
-        }
-    }
-
-    /**
      * Read a pharmacy from de database
      * @param pharmacyId
      * @return That pharmacy
      */
-    public static Pharmacy readPharmacy(Integer pharmacyId){
+    public static CustomPharmacy readPharmacy(Integer pharmacyId){
         DBConnector connector = DBConnector.getInstance();
         try{
-            return new PharmacyDao(connector.getConfiguration()).fetchOneById(pharmacyId);
+            return  connector.getContext().select(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER,
+                    PHARMACY.ADDRESS, PHARMACY.IMAGE_URL, ORDER.SCORE.avg().as("average_score")).
+                    from(PRODUCT).join(PHARMACY).on(PRODUCT.PHARMACY_ID.equal(PHARMACY.ID))
+                    .leftOuterJoin(ORDER).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID))
+                    .where(PHARMACY.ID.equal(pharmacyId))
+                    .groupBy(PHARMACY.ID).fetchOneInto(CustomPharmacy.class);
         }finally {
             connector.closeConnection();
         }

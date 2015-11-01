@@ -5,7 +5,7 @@ import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.controller.PharmaciesController;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.ProductsController;
-import uy.achoo.customModel.PharmacyJPA;
+import uy.achoo.customModel.CustomPharmacy;
 import uy.achoo.model.tables.pojos.Pharmacy;
 import uy.achoo.model.tables.pojos.Product;
 import uy.achoo.rest.util.AuthenticationRequiredFilter;
@@ -36,7 +36,7 @@ public class PharmaciesResource {
                 List<Pharmacy> pharmacies = PharmaciesController.findAllPharmacies();
                 response = Response.status(200).entity(pharmacies).build();
             }else{
-                List<PharmacyJPA> pharmacies = PharmaciesController.searchPharmaciesByNameOrProductName(productNamePart,
+                List<CustomPharmacy> pharmacies = PharmaciesController.searchPharmaciesByNameOrProductName(productNamePart,
                         latitude, longitude);
                 response = Response.status(200).entity(pharmacies).build();
             }
@@ -51,9 +51,8 @@ public class PharmaciesResource {
     @GET
     @Path("{pharmacyId}")
     public Response readPharmacy(@PathParam("pharmacyId") Integer pharmacyId) {
-        Pharmacy pharmacy = PharmaciesController.readPharmacy(pharmacyId);
-        Response response = Response.status(200).entity(pharmacy).build();
-        return response;
+        CustomPharmacy pharmacy = PharmaciesController.readPharmacy(pharmacyId);
+        return Response.status(200).entity(pharmacy).build();
     }
 
     @GET
