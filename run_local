@@ -14,7 +14,7 @@ jvm_options=(
 
 app_options=(
   -app_class=uy.achoo.AchooServiceMain
-  -http_port=8080
+  -http_port=3000
   -use_glog=true
   -use_glog_formatter=true
 )
