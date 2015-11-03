@@ -1,4 +1,4 @@
-package uy.achoo.Wrappers;
+package uy.achoo.wrappers;
 
 /**
  * @author Alfredo El Ters

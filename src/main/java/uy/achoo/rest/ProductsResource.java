@@ -1,8 +1,10 @@
 package uy.achoo.rest;
 
 
+import com.sun.jersey.spi.container.ResourceFilters;
 import uy.achoo.controller.ProductsController;
 import uy.achoo.model.tables.pojos.Product;
+import uy.achoo.rest.util.CORSResourceFilter;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -20,6 +22,7 @@ import java.util.List;
  */
 @Path("/products")
 @Produces(MediaType.APPLICATION_JSON)
+@ResourceFilters(CORSResourceFilter.class)
 public class ProductsResource {
 
     @GET

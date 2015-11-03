@@ -1,15 +1,13 @@
 package uy.achoo.rest;
 
 import com.sun.jersey.spi.container.ResourceFilters;
-import org.jooq.util.derby.sys.Sys;
-import uy.achoo.Wrappers.JWTWrapper;
-import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
+import uy.achoo.rest.util.CORSResourceFilter;
+import uy.achoo.wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.UsersController;
 import uy.achoo.model.tables.pojos.User;
-import uy.achoo.rest.util.AuthenticationRequiredFilter;
+import uy.achoo.rest.util.AuthenticatedResourceFilter;
 import uy.achoo.util.EmailService;
-import uy.achoo.util.JWTUtils;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -31,6 +29,7 @@ import java.util.List;
  */
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
+@ResourceFilters(CORSResourceFilter.class)
 public class UsersResource {
 
     @Inject
@@ -71,7 +70,7 @@ public class UsersResource {
 
 
     @GET
-    @ResourceFilters(AuthenticationRequiredFilter.class)
+    @ResourceFilters(AuthenticatedResourceFilter.class)
     @Path("{userId}/orders")
     public Response listOrders(@PathParam("userId") Integer userId) {
         Response response;

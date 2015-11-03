@@ -1,10 +1,11 @@
 package uy.achoo.rest;
 
 import com.sun.jersey.spi.container.ResourceFilters;
-import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.controller.OrdersController;
-import uy.achoo.rest.util.AuthenticationRequiredFilter;
+import uy.achoo.rest.util.AuthenticatedResourceFilter;
+import uy.achoo.rest.util.CORSResourceFilter;
 import uy.achoo.util.JWTUtils;
+import uy.achoo.wrappers.OrderAndOrderLinesWrapper;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -24,9 +25,10 @@ import java.util.Map;
  */
 @Path("/orders")
 @Produces(MediaType.APPLICATION_JSON)
+@ResourceFilters(CORSResourceFilter.class)
 public class OrdersResource {
     @POST
-    @ResourceFilters(AuthenticationRequiredFilter.class)
+    @ResourceFilters(AuthenticatedResourceFilter.class)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response create(OrderAndOrderLinesWrapper orderAndOrderLines, @Context HttpHeaders headers) {
         Response response;
@@ -43,7 +45,7 @@ public class OrdersResource {
     }
 
     @PUT
-    @ResourceFilters(AuthenticationRequiredFilter.class)
+    @ResourceFilters(AuthenticatedResourceFilter.class)
     @Path("{orderId}/score")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response rate(@PathParam("orderId") Integer orderId, @FormParam("score") Integer score) {
@@ -60,7 +62,7 @@ public class OrdersResource {
     }
 
     @GET
-    @ResourceFilters(AuthenticationRequiredFilter.class)
+    @ResourceFilters(AuthenticatedResourceFilter.class)
     @Path("{orderId}")
     public Response read(@PathParam("orderId") Integer orderId) {
         Response response;

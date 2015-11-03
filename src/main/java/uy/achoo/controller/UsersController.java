@@ -79,7 +79,7 @@ public class UsersController {
      * @throws NoSuchAlgorithmException
      * @throws SQLException
      */
-    public static boolean checkUsersPassword(String email, String password, boolean passwordAlreadyHashed) throws UnsupportedEncodingException, NoSuchAlgorithmException, SQLException {
+    public static boolean checkUserPassword(String email, String password, boolean passwordAlreadyHashed) throws UnsupportedEncodingException, NoSuchAlgorithmException, SQLException {
         DBConnector connector = DBConnector.getInstance();
         try {
             boolean result = false;

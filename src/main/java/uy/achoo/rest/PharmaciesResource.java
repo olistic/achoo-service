@@ -1,14 +1,15 @@
 package uy.achoo.rest;
 
 import com.sun.jersey.spi.container.ResourceFilters;
-import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
+import uy.achoo.rest.util.CORSResourceFilter;
+import uy.achoo.wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.controller.PharmaciesController;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.ProductsController;
 import uy.achoo.customModel.CustomPharmacy;
 import uy.achoo.model.tables.pojos.Pharmacy;
 import uy.achoo.model.tables.pojos.Product;
-import uy.achoo.rest.util.AuthenticationRequiredFilter;
+import uy.achoo.rest.util.AuthenticatedResourceFilter;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +25,7 @@ import java.util.List;
  */
 @Path("/pharmacies")
 @Produces(MediaType.APPLICATION_JSON)
+@ResourceFilters(CORSResourceFilter.class)
 public class PharmaciesResource {
 
     @GET
@@ -56,7 +58,7 @@ public class PharmaciesResource {
     }
 
     @GET
-    @ResourceFilters(AuthenticationRequiredFilter.class)
+    @ResourceFilters(AuthenticatedResourceFilter.class)
     @Path("{pharmacyId}/orders")
     public Response listOrders(@PathParam("pharmacyId") Integer pharmacyId) {
         Response response;

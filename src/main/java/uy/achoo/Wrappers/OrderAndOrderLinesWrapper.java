@@ -1,4 +1,4 @@
-package uy.achoo.Wrappers;
+package uy.achoo.wrappers;
 
 
 import uy.achoo.model.tables.pojos.Order;
@@ -12,8 +12,8 @@ import java.util.List;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
- *         <p>
- *         Auxiliary class to wrap an order with its order lines
+ *
+ * Auxiliary class to wrap an order with its order lines
  */
 public class OrderAndOrderLinesWrapper implements Serializable {
     private Order order;

@@ -1,6 +1,8 @@
 package uy.achoo.rest;
 
-import uy.achoo.Wrappers.JWTWrapper;
+import com.sun.jersey.spi.container.ResourceFilters;
+import uy.achoo.rest.util.CORSResourceFilter;
+import uy.achoo.wrappers.JWTWrapper;
 import uy.achoo.controller.UsersController;
 import uy.achoo.model.tables.pojos.User;
 import uy.achoo.util.JWTUtils;
@@ -19,6 +21,7 @@ import javax.ws.rs.core.Response;
  */
 @Path("/sessions")
 @Produces(MediaType.APPLICATION_JSON)
+@ResourceFilters(CORSResourceFilter.class)
 public class SessionsResource {
 
 

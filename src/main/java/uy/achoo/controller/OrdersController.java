@@ -3,7 +3,7 @@ package uy.achoo.controller;
 import org.jooq.BatchBindStep;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
-import uy.achoo.Wrappers.OrderAndOrderLinesWrapper;
+import uy.achoo.wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.database.DBConnector;
 import uy.achoo.model.tables.daos.OrderDao;
 import uy.achoo.model.tables.daos.OrderLineDao;
