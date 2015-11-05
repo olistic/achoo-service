@@ -19,9 +19,9 @@ import java.util.regex.Pattern;
  * @author Matías Olivera
  */
 public class EmailService {
-    private static final String SMTP_HOST = "smtp.gmail.com";
-    private static final String SMTP_USER = "achoouy@gmail.com";
-    private static final String SMTP_PASSWORD = "achoois3";
+    private static final String SMTP_HOST = "box.achoo.uy";
+    private static final String SMTP_USER = "no-reply@achoo.uy";
+    private static final String SMTP_PASSWORD = "mamadera";
 
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
@@ -30,7 +30,7 @@ public class EmailService {
     private static final Logger logger = Logger.getLogger(EmailService.class
             .getName());
 
-    public static void sendRegistrationMail(String email, String firstName, String password)
+    public static void sendRegistrationMail(String email, String firstName)
             throws MessagingException {
 
         String subject = "Welcome " + firstName + " !";
@@ -82,8 +82,11 @@ public class EmailService {
                     props.put("mail.smtp.host", SMTP_HOST);
                     props.put("mail.smtp.user", SMTP_USER);
                     props.put("mail.smtp.password", SMTP_PASSWORD);
+                    props.put("mail.smtp.ssl.trust", SMTP_HOST);
                     props.put("mail.smtp.port", "25");
                     props.put("mail.smtp.auth", true);
+
+                    System.out.println("Enviando email");
 
                     logger.log(Level.INFO, "Authenticating with SMTP Server");
                     Session session = Session.getInstance(props, null);

@@ -24,7 +24,6 @@ import javax.ws.rs.core.Response;
 @ResourceFilters(CORSResourceFilter.class)
 public class SessionsResource {
 
-
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response createSession(@FormParam("email") String email, @FormParam("password") String password) {

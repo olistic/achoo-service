@@ -15,6 +15,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,6 +37,7 @@ public class OrdersResource {
         try {
             Map<String, Object> authorizationPayload  = JWTUtils.decodeToken(JWTUtils.getTokenFromHeaders(headers));
             orderAndOrderLines.getOrder().setUserId((Integer) authorizationPayload.get("id"));
+            orderAndOrderLines.getOrder().setDate(new Timestamp(new Date().getTime()));
             OrdersController.createOrder(orderAndOrderLines.getOrder(), orderAndOrderLines.getOrderLines());
             response = Response.status(200).entity(orderAndOrderLines).build();
         } catch (SQLException | NullPointerException | MessagingException | ServletException e) {

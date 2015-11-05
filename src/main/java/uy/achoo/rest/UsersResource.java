@@ -57,7 +57,7 @@ public class UsersResource {
             String password = user.getPassword();
             User createdUser = UsersController.createUser(user);
             if (createdUser != null) {
-                EmailService.sendRegistrationMail(createdUser.getEmail(), createdUser.getFirstName(), password);
+                EmailService.sendRegistrationMail(createdUser.getEmail(), createdUser.getFirstName());
             }
             response = Response.status(200).entity(createdUser).build();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException |
