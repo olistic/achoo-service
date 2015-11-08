@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +30,22 @@ import java.util.Map;
 @Produces(MediaType.APPLICATION_JSON)
 @ResourceFilters(CORSResourceFilter.class)
 public class OrdersResource {
+    @GET
+    @ResourceFilters(AuthenticatedResourceFilter.class)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response listOrdersOfUser(@Context HttpHeaders headers) {
+        Response response;
+        try {
+            Map<String, Object> authorizationPayload  = JWTUtils.decodeToken(JWTUtils.getTokenFromHeaders(headers));
+            List<OrderAndOrderLinesWrapper> orders = OrdersController.findAllOrdersOfUser((Integer) authorizationPayload.get("id"));
+            response = Response.status(200).entity(orders).build();
+        } catch (SQLException | NullPointerException | ServletException e) {
+            e.printStackTrace();
+            response = Response.status(500).entity(null).build();
+        }
+        return response;
+    }
+
     @POST
     @ResourceFilters(AuthenticatedResourceFilter.class)
     @Consumes(MediaType.APPLICATION_JSON)
