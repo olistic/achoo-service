@@ -42,4 +42,3 @@ public class CORSResourceFilter implements ResourceFilter {
         };
     }
 }
-
