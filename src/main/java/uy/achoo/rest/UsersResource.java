@@ -32,6 +32,11 @@ import java.util.List;
 @ResourceFilters(CORSResourceFilter.class)
 public class UsersResource {
 
+    @OPTIONS
+    public Response corsCreate() {
+        return Response.status(Response.Status.OK).build();
+    }
+
     @Inject
     public UsersResource() {
     }
@@ -47,11 +52,6 @@ public class UsersResource {
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
-    }
-
-    @OPTIONS
-    public Response corsCreate() {
-      return Response.status(Response.Status.OK).build();
     }
 
     @POST
