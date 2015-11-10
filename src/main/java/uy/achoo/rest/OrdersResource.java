@@ -2,11 +2,10 @@ package uy.achoo.rest;
 
 import com.sun.jersey.spi.container.ResourceFilters;
 import uy.achoo.controller.OrdersController;
-import uy.achoo.customModel.CustomOrderAndOrderLines;
+import uy.achoo.customModel.CustomOrder;
 import uy.achoo.rest.util.AuthenticatedResourceFilter;
 import uy.achoo.rest.util.CORSResourceFilter;
 import uy.achoo.util.JWTUtils;
-import uy.achoo.wrappers.OrderAndOrderLinesWrapper;
 
 import javax.mail.MessagingException;
 import javax.ws.rs.*;
@@ -39,7 +38,7 @@ public class OrdersResource {
         Response response;
         try {
             Map<String, Object> authorizationPayload = JWTUtils.decodeToken(token);
-            List<CustomOrderAndOrderLines> orders = OrdersController.findAllOrdersOfUser((Integer) authorizationPayload.get("id"));
+            List<CustomOrder> orders = OrdersController.findAllOrdersOfUser((Integer) authorizationPayload.get("id"));
             response = Response.status(Response.Status.OK).entity(orders).build();
         } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
@@ -49,14 +48,14 @@ public class OrdersResource {
     }
 
     @POST
-    public Response create(OrderAndOrderLinesWrapper orderAndOrderLines, @QueryParam("token") String token) {
+    public Response create(CustomOrder order, @QueryParam("token") String token) {
         Response response;
         try {
             Map<String, Object> authorizationPayload = JWTUtils.decodeToken(token);
-            orderAndOrderLines.getOrder().setUserId((Integer) authorizationPayload.get("id"));
-            orderAndOrderLines.getOrder().setDate(new Timestamp(new Date().getTime()));
-            OrdersController.createOrder(orderAndOrderLines.getOrder(), orderAndOrderLines.getOrderLines());
-            response = Response.status(Response.Status.OK).entity(orderAndOrderLines).build();
+            order.setUserId((Integer) authorizationPayload.get("id"));
+            order.setDate(new Timestamp(new Date().getTime()));
+            OrdersController.createOrder(order);
+            response = Response.status(Response.Status.OK).entity(order).build();
         } catch (SQLException | NullPointerException | MessagingException e) {
             e.printStackTrace();
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
@@ -81,13 +80,17 @@ public class OrdersResource {
     }
 
     @GET
-    @ResourceFilters(AuthenticatedResourceFilter.class)
     @Path("{orderId}")
-    public Response read(@PathParam("orderId") Integer orderId) {
+    public Response read(@PathParam("orderId") Integer orderId, @QueryParam("token") String token) {
         Response response;
         try {
-            OrderAndOrderLinesWrapper orderAndOrderLines = OrdersController.readOrder(orderId);
-            response = Response.status(Response.Status.OK).entity(orderAndOrderLines).build();
+            CustomOrder order = OrdersController.readOrder(orderId);
+            Map<String, Object> authorizationPayload = JWTUtils.decodeToken(token);
+            if(authorizationPayload != null && authorizationPayload.get("id").equals(order.getUserId())){
+                response = Response.status(Response.Status.OK).entity(order).build();
+            }else{
+                response = Response.status(Response.Status.UNAUTHORIZED).entity(null).build();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();

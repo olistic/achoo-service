@@ -2,6 +2,7 @@ package uy.achoo.customModel;
 
 import javax.persistence.Column;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author Alfredo El Ters
@@ -27,6 +28,8 @@ public class CustomOrder {
     private Timestamp date;
     @Column(name = "score")
     private Integer score;
+
+    private List<CustomOrderLine> orderLines;
 
 
     public Integer getId() {
@@ -75,5 +78,13 @@ public class CustomOrder {
 
     public void setScore(Integer score) {
         this.score = score;
+    }
+
+    public List<CustomOrderLine> getOrderLines() {
+        return orderLines;
+    }
+
+    public void setOrderLines(List<CustomOrderLine> orderLines) {
+        this.orderLines = orderLines;
     }
 }

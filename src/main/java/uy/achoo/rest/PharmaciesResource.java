@@ -4,7 +4,7 @@ import com.sun.jersey.spi.container.ResourceFilters;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.PharmaciesController;
 import uy.achoo.controller.ProductsController;
-import uy.achoo.customModel.CustomOrderAndOrderLines;
+import uy.achoo.customModel.CustomOrder;
 import uy.achoo.customModel.CustomPharmacy;
 import uy.achoo.model.tables.pojos.Product;
 import uy.achoo.rest.util.AuthenticatedResourceFilter;
@@ -67,8 +67,8 @@ public class PharmaciesResource {
     public Response listOrders(@PathParam("pharmacyId") Integer pharmacyId) {
         Response response;
         try {
-            List<CustomOrderAndOrderLines> orderAndOrderLines = OrdersController.findAllOrdersOfPharmacy(pharmacyId);
-            response = Response.status(Response.Status.OK).entity(orderAndOrderLines).build();
+            List<CustomOrder> orders = OrdersController.findAllOrdersOfPharmacy(pharmacyId);
+            response = Response.status(Response.Status.OK).entity(orders).build();
         } catch (SQLException e) {
             e.printStackTrace();
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
