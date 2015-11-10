@@ -44,18 +44,18 @@ public class PharmaciesController {
     /**
      * Find all pharmacies that offer a product that has a name that contains namePart or a name that contains namePart
      *
-     * @param namePart
+     * @param query
      * @return The list of pharmacies with that product.
      * @throws SQLException
      */
-    public static List<CustomPharmacy> searchPharmaciesByNameOrProductName(String namePart, Double latitude, Double longitude) throws Exception {
+    public static List<CustomPharmacy> searchPharmaciesByNameOrProductName(String query, Double latitude, Double longitude) throws Exception {
         DBConnector connector = DBConnector.getInstance();
         Connection connection = connector.createConnection();
         try {
             List<CustomPharmacy> pharmacies = new ArrayList<>();
-            if (namePart != null) {
+            if (query != null) {
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("%").append(namePart).append("%");
+                stringBuilder.append("%").append(query).append("%");
                 pharmacies = connector.getContext(connection).selectDistinct(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER,
                         PHARMACY.ADDRESS, PHARMACY.IMAGE_URL, ORDER.SCORE.avg().as("average_score")).
                         from(PRODUCT).join(PHARMACY).on(PRODUCT.PHARMACY_ID.equal(PHARMACY.ID))
@@ -63,7 +63,7 @@ public class PharmaciesController {
                         .where(PRODUCT.NAME.like(stringBuilder.toString())
                                 .or(PHARMACY.NAME.like(stringBuilder.toString())))
                         .groupBy(PHARMACY.ID).fetchInto(CustomPharmacy.class);
-                if (latitude != null && longitude != null) {
+                if (pharmacies != null && !pharmacies.isEmpty() && latitude != null && longitude != null) {
                     pharmacies = GoogleService.orderPharmaciesByLocation(latitude, longitude, pharmacies);
                 }
             }

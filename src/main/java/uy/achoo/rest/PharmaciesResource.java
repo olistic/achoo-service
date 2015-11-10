@@ -34,16 +34,16 @@ public class PharmaciesResource {
     }
 
     @GET
-    public Response listPharmacies(@QueryParam("name") String productNamePart,
+    public Response listPharmacies(@QueryParam("query") String query,
                                    @QueryParam("latitude") Double latitude,
                                    @QueryParam("longitude") Double longitude) {
         Response response;
         try {
             List<CustomPharmacy> pharmacies;
-            if (productNamePart == null) {
+            if (query == null) {
                  pharmacies = PharmaciesController.findAllPharmacies();
             } else {
-                pharmacies = PharmaciesController.searchPharmaciesByNameOrProductName(productNamePart,
+                pharmacies = PharmaciesController.searchPharmaciesByNameOrProductName(query,
                         latitude, longitude);
             }
             response = Response.status(Response.Status.OK).entity(pharmacies).build();
