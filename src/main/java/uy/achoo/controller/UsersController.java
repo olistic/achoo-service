@@ -48,8 +48,8 @@ public class UsersController {
     }
 
     private static UserRecord insertUser(User user, DSLContext context) {
-        return context.insertInto(USER, USER.EMAIL, USER.FIRST_NAME, USER.LAST_NAME, USER.PASSWORD, USER.SALT)
-                .values(user.getEmail(), user.getFirstName(), user.getLastName(), user.getPassword(), user.getSalt())
+        return context.insertInto(USER, USER.EMAIL, USER.FIRST_NAME, USER.LAST_NAME, USER.ADDRESS ,USER.PASSWORD, USER.SALT)
+                .values(user.getEmail(), user.getFirstName(), user.getLastName(),user.getAddress() ,user.getPassword(), user.getSalt())
                 .returning(USER.ID).fetchOne();
     }
 
@@ -62,7 +62,7 @@ public class UsersController {
     public static List<User> findAllUsers() throws SQLException {
         DBConnector connector = DBConnector.getInstance();
         try {
-            return connector.getContext().select(USER.ID, USER.EMAIL, USER.FIRST_NAME, USER.LAST_NAME)
+            return connector.getContext().select(USER.ID, USER.EMAIL, USER.FIRST_NAME, USER.LAST_NAME, USER.ADDRESS)
                     .from(USER).fetchInto(User.class);
         } finally {
             connector.closeConnection();

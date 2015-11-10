@@ -1,8 +1,8 @@
 USE `achoo_dev`;
-INSERT INTO user(first_name, last_name, email, password, salt) values('Mathias','Cabano', 'mathias@achoo.uy', 'CZ4i3Yh+wuthP5yqZRRFKAMmMBY=', 'gL6bdcesQOQ=');
-INSERT INTO user(first_name, last_name, email, password, salt) values('Matias','Olivera', 'matias@achoo.uy', 'n07B0NvWJchGEKomzkPhrVjBBcQ=', 'eOBrddD0VU8=');
-INSERT INTO user(first_name, last_name, email, password, salt) values('Diego','Muracciole', 'diego@achoo.uy', 'n07B0NvWJchGEKomzkPhrVjBBcQ=', 'eOBrddD0VU8=');
-INSERT INTO user(first_name, last_name, email, password, salt) values('Alfredo','El Ters', 'alfredo@achoo.uy', 'n07B0NvWJchGEKomzkPhrVjBBcQ=', 'eOBrddD0VU8=');
+INSERT INTO user(first_name, last_name, address , email, password, salt) values('Mathias','Cabano','Av. Italia 1234, Montevideo, Urugua' ,'mathias@achoo.uy', 'CZ4i3Yh+wuthP5yqZRRFKAMmMBY=', 'gL6bdcesQOQ=');
+INSERT INTO user(first_name, last_name, address, email, password, salt) values('Matias','Olivera','Belgrano 1234, Montevideo, Uruguay' ,'matias@achoo.uy', 'n07B0NvWJchGEKomzkPhrVjBBcQ=', 'eOBrddD0VU8=');
+INSERT INTO user(first_name, last_name, address , email, password, salt) values('Diego','Muracciole','Llorona 1234, Montevideo, Uruguay' ,'diego@achoo.uy', 'n07B0NvWJchGEKomzkPhrVjBBcQ=', 'eOBrddD0VU8=');
+INSERT INTO user(first_name, last_name, address, email, password, salt) values('Alfredo','El Ters','Priamo 1579, Montevideo, Uruguay' ,'alfredo@achoo.uy', 'n07B0NvWJchGEKomzkPhrVjBBcQ=', 'eOBrddD0VU8=');
 
 
 INSERT INTO pharmacy(name, phone_number, address, image_url) values('Walgreens', '(415) 391-7222', '135 Powell St, San Francisco, CA', 'https://pbs.twimg.com/profile_images/467002768075395072/ya2By6bN.jpeg');

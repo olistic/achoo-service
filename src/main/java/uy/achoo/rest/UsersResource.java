@@ -46,7 +46,7 @@ public class UsersResource {
         Response response;
         try {
             List<User> users = UsersController.findAllUsers();
-            response = Response.status(200).entity(users).build();
+            response = Response.status(Response.Status.OK).entity(users).build();
         } catch (SQLException e) {
             e.printStackTrace();
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
