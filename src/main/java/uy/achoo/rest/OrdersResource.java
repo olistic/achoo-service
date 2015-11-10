@@ -2,6 +2,7 @@ package uy.achoo.rest;
 
 import com.sun.jersey.spi.container.ResourceFilters;
 import uy.achoo.controller.OrdersController;
+import uy.achoo.customModel.CustomOrderAndOrderLines;
 import uy.achoo.rest.util.AuthenticatedResourceFilter;
 import uy.achoo.rest.util.CORSResourceFilter;
 import uy.achoo.util.JWTUtils;
@@ -43,7 +44,7 @@ public class OrdersResource {
         Response response;
         try {
             Map<String, Object> authorizationPayload = JWTUtils.decodeToken(JWTUtils.getTokenFromHeaders(headers));
-            List<OrderAndOrderLinesWrapper> orders = OrdersController.findAllOrdersOfUser((Integer) authorizationPayload.get("id"));
+            List<CustomOrderAndOrderLines> orders = OrdersController.findAllOrdersOfUser((Integer) authorizationPayload.get("id"));
             response = Response.status(Response.Status.OK).entity(orders).build();
         } catch (SQLException | NullPointerException | ServletException e) {
             e.printStackTrace();
