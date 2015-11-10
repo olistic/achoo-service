@@ -2,6 +2,7 @@ package uy.achoo.customModel;
 
 import javax.persistence.Column;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author Alfredo El Ters
@@ -23,15 +24,20 @@ public class CustomOrder {
     private Integer pharmacyId;
     @Column(name = "name")
     private String pharmacyName;
+    @Column(name = "image_url")
+    private String pharmacyImageUrl;
     @Column(name = "date")
     private Timestamp date;
     @Column(name = "score")
     private Integer score;
 
+    private List<CustomOrderLine> orderLines;
+
 
     public Integer getId() {
         return id;
     }
+
 
     public void setId(Integer id) {
         this.id = id;
@@ -75,5 +81,21 @@ public class CustomOrder {
 
     public void setScore(Integer score) {
         this.score = score;
+    }
+
+    public List<CustomOrderLine> getOrderLines() {
+        return orderLines;
+    }
+
+    public void setOrderLines(List<CustomOrderLine> orderLines) {
+        this.orderLines = orderLines;
+    }
+
+    public String getPharmacyImageUrl() {
+        return pharmacyImageUrl;
+    }
+
+    public void setPharmacyImageUrl(String pharmacyImageUrl) {
+        this.pharmacyImageUrl = pharmacyImageUrl;
     }
 }

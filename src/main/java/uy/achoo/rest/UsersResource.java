@@ -3,9 +3,8 @@ package uy.achoo.rest;
 import com.sun.jersey.spi.container.ResourceFilters;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.UsersController;
-import uy.achoo.customModel.CustomOrderAndOrderLines;
+import uy.achoo.customModel.CustomOrder;
 import uy.achoo.model.tables.pojos.User;
-import uy.achoo.rest.util.AuthenticatedResourceFilter;
 import uy.achoo.rest.util.CORSResourceFilter;
 import uy.achoo.util.EmailService;
 
@@ -73,13 +72,12 @@ public class UsersResource {
     }
 
     @GET
-    @ResourceFilters(AuthenticatedResourceFilter.class)
     @Path("{userId}/orders")
-    public Response listOrders(@PathParam("userId") Integer userId) {
+    public Response listOrders(@PathParam("userId") Integer userId, @QueryParam("token") String token) {
         Response response;
         try {
-            List<CustomOrderAndOrderLines> orderAndOrderLines = OrdersController.findAllOrdersOfUser(userId);
-            response = Response.status(Response.Status.OK).entity(orderAndOrderLines).build();
+            List<CustomOrder> orders = OrdersController.findAllOrdersOfUser(userId);
+            response = Response.status(Response.Status.OK).entity(orders).build();
         } catch (SQLException e) {
             e.printStackTrace();
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
