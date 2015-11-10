@@ -15,6 +15,7 @@ import uy.achoo.util.EmailService;
 import uy.achoo.wrappers.OrderAndOrderLinesWrapper;
 
 import javax.mail.MessagingException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +40,10 @@ public class OrdersController {
      */
     public static Order createOrder(Order order, List<OrderLine> orderLines) throws SQLException, MessagingException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            DSLContext context = connector.getContext();
-            User orderUser = new UserDao(connector.getConfiguration()).fetchOneById(order.getUserId());
+            DSLContext context = connector.getContext(connection);
+            User orderUser = new UserDao(connector.getConfiguration(connection)).fetchOneById(order.getUserId());
             if (orderUser != null) {
                 OrderRecord insertedOrder = insertOrder(order, context);
                 order.setId(insertedOrder.getId());
@@ -51,7 +53,7 @@ public class OrdersController {
             }
             return null;
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -82,11 +84,12 @@ public class OrdersController {
      */
     public static Integer rateOrder(Integer orderId, Integer score) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            connector.getContext().update(ORDER).set(ORDER.SCORE, score).where(ORDER.ID.equal(orderId)).execute();
+            connector.getContext(connection).update(ORDER).set(ORDER.SCORE, score).where(ORDER.ID.equal(orderId)).execute();
             return score;
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -99,14 +102,15 @@ public class OrdersController {
      */
     public static OrderAndOrderLinesWrapper readOrder(Integer orderId) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            Configuration configuration = connector.getConfiguration();
+            Configuration configuration = connector.getConfiguration(connection);
             Order order = new OrderDao(configuration).fetchOneById(orderId);
             List<OrderLine> orderLines = new OrderLineDao(configuration).fetchByOrderId(orderId);
             return new OrderAndOrderLinesWrapper(order, orderLines);
         } finally {
             // Close the database connection
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -119,8 +123,9 @@ public class OrdersController {
      */
     public static List<OrderAndOrderLinesWrapper> findAllOrdersOfUser(Integer userId) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            Configuration configuration = connector.getConfiguration();
+            Configuration configuration = connector.getConfiguration(connection);
             List<OrderAndOrderLinesWrapper> ordersAndOrderLines = new ArrayList<>();
             List<Order> orders = new OrderDao(configuration).fetchByUserId(userId);
             OrderAndOrderLinesWrapper orderAndLines;
@@ -135,7 +140,7 @@ public class OrdersController {
             return ordersAndOrderLines;
         } finally {
             // Close the database connection
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -148,8 +153,9 @@ public class OrdersController {
      */
     public static List<OrderAndOrderLinesWrapper> findAllOrdersOfDrugStore(Integer pharmacyId) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            Configuration configuration = connector.getConfiguration();
+            Configuration configuration = connector.getConfiguration(connection);
             List<OrderAndOrderLinesWrapper> ordersAndOrderLines = new ArrayList<>();
             List<Order> orders = new OrderDao(configuration).fetchByPharmacyId(pharmacyId);
             OrderAndOrderLinesWrapper orderAndLines;
@@ -164,7 +170,7 @@ public class OrdersController {
             return ordersAndOrderLines;
         } finally {
             // Close the database connection
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 }

@@ -6,6 +6,7 @@ import uy.achoo.model.tables.daos.PharmacyDao;
 import uy.achoo.model.tables.pojos.Pharmacy;
 import uy.achoo.util.GoogleService;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +28,16 @@ public class PharmaciesController {
      */
     public static List<CustomPharmacy> findAllPharmacies() throws SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            List<CustomPharmacy> pharmacies = connector.getContext().selectDistinct(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER,
+            List<CustomPharmacy> pharmacies = connector.getContext(connection).selectDistinct(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER,
                         PHARMACY.ADDRESS, PHARMACY.IMAGE_URL, ORDER.SCORE.avg().as("average_score")).
                         from(PRODUCT).join(PHARMACY).on(PRODUCT.PHARMACY_ID.equal(PHARMACY.ID))
                         .leftOuterJoin(ORDER).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID))
                         .groupBy(PHARMACY.ID).fetchInto(CustomPharmacy.class);
             return pharmacies;
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -48,12 +50,13 @@ public class PharmaciesController {
      */
     public static List<CustomPharmacy> searchPharmaciesByNameOrProductName(String namePart, Double latitude, Double longitude) throws Exception {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
             List<CustomPharmacy> pharmacies = new ArrayList<>();
             if (namePart != null) {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("%").append(namePart).append("%");
-                pharmacies = connector.getContext().selectDistinct(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER,
+                pharmacies = connector.getContext(connection).selectDistinct(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER,
                         PHARMACY.ADDRESS, PHARMACY.IMAGE_URL, ORDER.SCORE.avg().as("average_score")).
                         from(PRODUCT).join(PHARMACY).on(PRODUCT.PHARMACY_ID.equal(PHARMACY.ID))
                         .leftOuterJoin(ORDER).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID))
@@ -66,7 +69,7 @@ public class PharmaciesController {
             }
             return pharmacies;
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -79,15 +82,16 @@ public class PharmaciesController {
      */
     public static CustomPharmacy readPharmacy(Integer pharmacyId) {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            return connector.getContext().select(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER,
+            return connector.getContext(connection).select(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER,
                     PHARMACY.ADDRESS, PHARMACY.IMAGE_URL, ORDER.SCORE.avg().as("average_score")).
                     from(PRODUCT).join(PHARMACY).on(PRODUCT.PHARMACY_ID.equal(PHARMACY.ID))
                     .leftOuterJoin(ORDER).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID))
                     .where(PHARMACY.ID.equal(pharmacyId))
                     .groupBy(PHARMACY.ID).fetchOneInto(CustomPharmacy.class);
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 

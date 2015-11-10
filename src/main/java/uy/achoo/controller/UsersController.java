@@ -11,6 +11,7 @@ import uy.achoo.util.PasswordGenerator;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -35,15 +36,16 @@ public class UsersController {
      */
     public static User createUser(User user) throws NoSuchAlgorithmException, UnsupportedEncodingException, SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
             byte[] salt = DigestUtils.getSalt();
             user.setPassword(DigestUtils.digestPassword(user.getPassword(), salt));
             user.setSalt(DigestUtils.byteToBase64(salt));
-            UserRecord insertedUser = insertUser(user, connector.getContext());
+            UserRecord insertedUser = insertUser(user, connector.getContext(connection));
             user.setId(insertedUser.getId());
             return user;
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -61,11 +63,12 @@ public class UsersController {
      */
     public static List<User> findAllUsers() throws SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            return connector.getContext().select(USER.ID, USER.EMAIL, USER.FIRST_NAME, USER.LAST_NAME, USER.ADDRESS)
+            return connector.getContext(connection).select(USER.ID, USER.EMAIL, USER.FIRST_NAME, USER.LAST_NAME, USER.ADDRESS)
                     .from(USER).fetchInto(User.class);
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -81,9 +84,10 @@ public class UsersController {
      */
     public static boolean checkUserPassword(String email, String password, boolean passwordAlreadyHashed) throws UnsupportedEncodingException, NoSuchAlgorithmException, SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
             boolean result = false;
-            User user = new UserDao(connector.getConfiguration()).fetchOneByEmail(email);
+            User user = new UserDao(connector.getConfiguration(connection)).fetchOneByEmail(email);
             if (user != null) {
                 String hashedPassword = passwordAlreadyHashed ? password :
                         DigestUtils.digestPassword(password, DigestUtils.base64toBytes(user.getSalt()));
@@ -91,7 +95,7 @@ public class UsersController {
             }
             return result;
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -107,8 +111,9 @@ public class UsersController {
      */
     public static User fetchUserByEmailAndPassword(String email, String password) throws UnsupportedEncodingException, NoSuchAlgorithmException, SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            User user = new UserDao(connector.getConfiguration()).fetchOneByEmail(email);
+            User user = new UserDao(connector.getConfiguration(connection)).fetchOneByEmail(email);
             if (user != null) {
                 String hashedPassword = DigestUtils.digestPassword(password, DigestUtils.base64toBytes(user.getSalt()));
                 if (hashedPassword.equals(user.getPassword())) {
@@ -117,7 +122,7 @@ public class UsersController {
             }
             return null;
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -129,9 +134,10 @@ public class UsersController {
      */
     public static String resetPassword(String email) throws UnsupportedEncodingException, NoSuchAlgorithmException, SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
             String result = null;
-            UserDao userDao = new UserDao(connector.getConfiguration());
+            UserDao userDao = new UserDao(connector.getConfiguration(connection));
             User user = userDao.fetchOneByEmail(email);
             if (user != null) {
                 String newPassword = PasswordGenerator.generatePassword(8);
@@ -142,7 +148,7 @@ public class UsersController {
             }
             return result;
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -154,11 +160,12 @@ public class UsersController {
      */
     public static Boolean isEmailAvailable(String email) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            UserDao userDao = new UserDao(connector.getConfiguration());
+            UserDao userDao = new UserDao(connector.getConfiguration(connection));
             return EmailService.validateEmail(email) && userDao.fetchOneByEmail(email) == null;
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 }

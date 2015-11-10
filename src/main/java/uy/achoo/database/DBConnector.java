@@ -26,7 +26,6 @@ public final class DBConnector {
     private static final String PASSWORD = "";
 
     private static final DBConnector INSTANCE = new DBConnector();
-    private static Connection connection = null;
 
     private DBConnector() {
     }
@@ -35,21 +34,11 @@ public final class DBConnector {
         return INSTANCE;
     }
 
-    public Connection connection() {
-        try {
-            if (connection == null || connection.isClosed()) {
-                connection = doConnection();
-            }
-        } catch (SQLException e) {
-            log.error(": {}", e);
-
-            throw new RuntimeException(e);
-        }
-
-        return connection;
+    public Connection createConnection() {
+        return doConnection();
     }
 
-    public void closeConnection() {
+    public void closeConnection(Connection connection) {
         try {
             connection.close();
 
@@ -74,11 +63,11 @@ public final class DBConnector {
         return conn;
     }
 
-    public Configuration getConfiguration() {
-        return new DefaultConfiguration().set(connection()).set(SQLDialect.MYSQL);
+    public Configuration getConfiguration(Connection connection) {
+        return new DefaultConfiguration().set(connection).set(SQLDialect.MYSQL);
     }
 
-    public DSLContext getContext() {
-        return DSL.using(getConfiguration());
+    public DSLContext getContext(Connection connection) {
+        return DSL.using(getConfiguration(connection));
     }
 }

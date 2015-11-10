@@ -4,6 +4,7 @@ import uy.achoo.database.DBConnector;
 import uy.achoo.model.tables.daos.ProductDao;
 import uy.achoo.model.tables.pojos.Product;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +27,11 @@ public class ProductsController {
      */
     public static Product readProduct(int productId) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            return new ProductDao(connector.getConfiguration()).findById(productId);
+            return new ProductDao(connector.getConfiguration(connection)).findById(productId);
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -42,10 +44,11 @@ public class ProductsController {
      */
     public static List<Product> searchAllProductsOfDrugstor(int pharmacyId) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            return new ProductDao(connector.getConfiguration()).fetchByPharmacyId(pharmacyId);
+            return new ProductDao(connector.getConfiguration(connection)).fetchByPharmacyId(pharmacyId);
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -57,10 +60,11 @@ public class ProductsController {
      */
     public static List<Product> listAllProducts() throws SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
-            return new ProductDao(connector.getConfiguration()).findAll();
+            return new ProductDao(connector.getConfiguration(connection)).findAll();
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 
@@ -73,17 +77,18 @@ public class ProductsController {
      */
     public static List<Product> searchProductsByName(String namePart) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
+        Connection connection = connector.createConnection();
         try {
             List<Product> products = new ArrayList<>();
             if (namePart != null) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("%").append(namePart).append("%");
-                products = connector.getContext().selectFrom(PRODUCT)
+                products = connector.getContext(connection).selectFrom(PRODUCT)
                         .where(PRODUCT.NAME.like(sb.toString())).fetchInto(Product.class);
             }
             return products;
         } finally {
-            connector.closeConnection();
+            connector.closeConnection(connection);
         }
     }
 }
