@@ -13,8 +13,8 @@ import java.security.SecureRandom;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
- *
- * Auxiliary class to hash passwords
+ *         <p/>
+ *         Auxiliary class to hash passwords
  */
 public class DigestUtils {
     private final static int ITERATION_NUMBER = 1000;

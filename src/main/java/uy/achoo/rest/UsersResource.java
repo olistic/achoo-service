@@ -1,13 +1,13 @@
 package uy.achoo.rest;
 
 import com.sun.jersey.spi.container.ResourceFilters;
-import uy.achoo.rest.util.CORSResourceFilter;
-import uy.achoo.wrappers.OrderAndOrderLinesWrapper;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.UsersController;
 import uy.achoo.model.tables.pojos.User;
 import uy.achoo.rest.util.AuthenticatedResourceFilter;
+import uy.achoo.rest.util.CORSResourceFilter;
 import uy.achoo.util.EmailService;
+import uy.achoo.wrappers.OrderAndOrderLinesWrapper;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -24,8 +24,8 @@ import java.util.List;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
- *
- * Users endpoint
+ *         <p/>
+ *         Users endpoint
  */
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -54,7 +54,6 @@ public class UsersResource {
     public Response create(User user) {
         Response response;
         try {
-            String password = user.getPassword();
             User createdUser = UsersController.createUser(user);
             if (createdUser != null) {
                 EmailService.sendRegistrationMail(createdUser.getEmail(), createdUser.getFirstName());

@@ -9,7 +9,7 @@ import com.sun.jersey.spi.container.ResourceFilter;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
- *
+ * <p/>
  * Allow Cross Origin Requests
  */
 
@@ -18,8 +18,8 @@ import com.sun.jersey.spi.container.ResourceFilter;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
- *
- * Filter for resources that require authentication
+ *         <p/>
+ *         Filter for resources that require authentication
  */
 public class CORSResourceFilter implements ResourceFilter {
 

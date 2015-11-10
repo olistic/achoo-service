@@ -1,15 +1,15 @@
 package uy.achoo.rest;
 
 import com.sun.jersey.spi.container.ResourceFilters;
-import uy.achoo.rest.util.CORSResourceFilter;
-import uy.achoo.wrappers.OrderAndOrderLinesWrapper;
-import uy.achoo.controller.PharmaciesController;
 import uy.achoo.controller.OrdersController;
+import uy.achoo.controller.PharmaciesController;
 import uy.achoo.controller.ProductsController;
 import uy.achoo.customModel.CustomPharmacy;
 import uy.achoo.model.tables.pojos.Pharmacy;
 import uy.achoo.model.tables.pojos.Product;
 import uy.achoo.rest.util.AuthenticatedResourceFilter;
+import uy.achoo.rest.util.CORSResourceFilter;
+import uy.achoo.wrappers.OrderAndOrderLinesWrapper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -34,17 +34,17 @@ public class PharmaciesResource {
                                    @QueryParam("longitude") Double longitude) {
         Response response;
         try {
-            if(productNamePart == null){
+            if (productNamePart == null) {
                 List<Pharmacy> pharmacies = PharmaciesController.findAllPharmacies();
-                response = Response.status(200).entity(pharmacies).build();
-            }else{
+                response = Response.status(Response.Status.OK).entity(pharmacies).build();
+            } else {
                 List<CustomPharmacy> pharmacies = PharmaciesController.searchPharmaciesByNameOrProductName(productNamePart,
                         latitude, longitude);
-                response = Response.status(200).entity(pharmacies).build();
+                response = Response.status(Response.Status.OK).entity(pharmacies).build();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }
@@ -54,7 +54,7 @@ public class PharmaciesResource {
     @Path("{pharmacyId}")
     public Response readPharmacy(@PathParam("pharmacyId") Integer pharmacyId) {
         CustomPharmacy pharmacy = PharmaciesController.readPharmacy(pharmacyId);
-        return Response.status(200).entity(pharmacy).build();
+        return Response.status(Response.Status.OK).entity(pharmacy).build();
     }
 
     @GET
@@ -64,10 +64,10 @@ public class PharmaciesResource {
         Response response;
         try {
             List<OrderAndOrderLinesWrapper> orderAndOrderLines = OrdersController.findAllOrdersOfDrugStore(pharmacyId);
-            response = Response.status(200).entity(orderAndOrderLines).build();
+            response = Response.status(Response.Status.OK).entity(orderAndOrderLines).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }
@@ -78,10 +78,10 @@ public class PharmaciesResource {
         Response response;
         try {
             List<Product> products = ProductsController.searchAllProductsOfDrugstor(pharmacyId);
-            response = Response.status(200).entity(products).build();
+            response = Response.status(Response.Status.OK).entity(products).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }

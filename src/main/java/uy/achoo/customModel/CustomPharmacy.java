@@ -9,9 +9,9 @@ import javax.persistence.Column;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
- *
- * Pharmacy with custom fields. This is necesary because JOOQ's POJOs can only contain fields that are direclty mapped
- * to physical database columns.
+ *         <p/>
+ *         Pharmacy with custom fields. This is necesary because JOOQ's POJOs can only contain fields that are direclty mapped
+ *         to physical database columns.
  */
 public class CustomPharmacy {
     private static final long serialVersionUID = 1785879361;
@@ -24,16 +24,17 @@ public class CustomPharmacy {
     private String phoneNumber;
     @Column(name = "address")
     private String address;
-    @Column(name= "image_url")
+    @Column(name = "image_url")
     private String imageUrl;
 
-    @Column (name = "average_score")
+    @Column(name = "average_score")
     private Double score;
 
     private Long distanceFromOrigin;
 
 
-    public CustomPharmacy() {}
+    public CustomPharmacy() {
+    }
 
 
     public CustomPharmacy(Integer id, String name, String phoneNumber, String address, String imageUrl) {
@@ -73,7 +74,9 @@ public class CustomPharmacy {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
     public String getAddress() {
         return address;
@@ -83,13 +86,21 @@ public class CustomPharmacy {
         this.address = address;
     }
 
-    public String getImageUrl() {return imageUrl;}
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
-    public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
-    public Double getScore() {return score;}
+    public Double getScore() {
+        return score;
+    }
 
-    public void setScore(Double score) {this.score = score;}
+    public void setScore(Double score) {
+        this.score = score;
+    }
 
     public Long getDistanceFromOrigin() {
         return distanceFromOrigin;

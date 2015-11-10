@@ -25,24 +25,24 @@ import java.util.regex.Pattern;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
- *
- * Auxiliary class to manage JSON Web tokens
+ *         <p/>
+ *         Auxiliary class to manage JSON Web tokens
  */
 public class JWTUtils {
     // Random base64-encoded encoded String to be used as client secret
     private static final String CLIENT_SECRET = "mkpj8eOMtsiJlnBG2vu1zOcbZi1pWGUnjFwsRJO1z2WGqRRTC3nWUQYCLI0kbQ8x";
 
-    public static  Map<String,Object> decodeToken(String token){
+    public static Map<String, Object> decodeToken(String token) {
         byte[] decodedSecret = new Base64(true).decodeBase64(CLIENT_SECRET);
         try {
             return new JWTVerifier(decodedSecret).verify(token);
-        } catch (NoSuchAlgorithmException|InvalidKeyException|IOException|SignatureException|JWTVerifyException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | IOException | SignatureException | JWTVerifyException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static String encodePayload(Map<String,Object> decodedData){
+    public static String encodePayload(Map<String, Object> decodedData) {
         byte[] decodedSecret = new Base64(true).decodeBase64(CLIENT_SECRET);
         return new JWTSigner(decodedSecret).sign(decodedData);
     }

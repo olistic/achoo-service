@@ -62,7 +62,7 @@ public class UsersController {
     public static List<User> findAllUsers() throws SQLException {
         DBConnector connector = DBConnector.getInstance();
         try {
-            return  connector.getContext().select(USER.ID, USER.EMAIL, USER.FIRST_NAME, USER.LAST_NAME)
+            return connector.getContext().select(USER.ID, USER.EMAIL, USER.FIRST_NAME, USER.LAST_NAME)
                     .from(USER).fetchInto(User.class);
         } finally {
             connector.closeConnection();

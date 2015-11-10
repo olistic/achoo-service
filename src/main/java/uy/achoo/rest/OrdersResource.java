@@ -36,12 +36,12 @@ public class OrdersResource {
     public Response listOrdersOfUser(@Context HttpHeaders headers) {
         Response response;
         try {
-            Map<String, Object> authorizationPayload  = JWTUtils.decodeToken(JWTUtils.getTokenFromHeaders(headers));
+            Map<String, Object> authorizationPayload = JWTUtils.decodeToken(JWTUtils.getTokenFromHeaders(headers));
             List<OrderAndOrderLinesWrapper> orders = OrdersController.findAllOrdersOfUser((Integer) authorizationPayload.get("id"));
-            response = Response.status(200).entity(orders).build();
+            response = Response.status(Response.Status.OK).entity(orders).build();
         } catch (SQLException | NullPointerException | ServletException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }
@@ -52,14 +52,14 @@ public class OrdersResource {
     public Response create(OrderAndOrderLinesWrapper orderAndOrderLines, @Context HttpHeaders headers) {
         Response response;
         try {
-            Map<String, Object> authorizationPayload  = JWTUtils.decodeToken(JWTUtils.getTokenFromHeaders(headers));
+            Map<String, Object> authorizationPayload = JWTUtils.decodeToken(JWTUtils.getTokenFromHeaders(headers));
             orderAndOrderLines.getOrder().setUserId((Integer) authorizationPayload.get("id"));
             orderAndOrderLines.getOrder().setDate(new Timestamp(new Date().getTime()));
             OrdersController.createOrder(orderAndOrderLines.getOrder(), orderAndOrderLines.getOrderLines());
-            response = Response.status(200).entity(orderAndOrderLines).build();
+            response = Response.status(Response.Status.OK).entity(orderAndOrderLines).build();
         } catch (SQLException | NullPointerException | MessagingException | ServletException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }
@@ -73,10 +73,10 @@ public class OrdersResource {
         try {
             if (score <= 5 && score >= 0)
                 OrdersController.rateOrder(orderId, score);
-            response = Response.status(200).entity(score).build();
+            response = Response.status(Response.Status.OK).entity(score).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }
@@ -88,10 +88,10 @@ public class OrdersResource {
         Response response;
         try {
             OrderAndOrderLinesWrapper orderAndOrderLines = OrdersController.readOrder(orderId);
-            response = Response.status(200).entity(orderAndOrderLines).build();
+            response = Response.status(Response.Status.OK).entity(orderAndOrderLines).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }

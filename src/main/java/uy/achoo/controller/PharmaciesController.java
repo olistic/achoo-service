@@ -56,7 +56,7 @@ public class PharmaciesController {
                         .where(PRODUCT.NAME.like(stringBuilder.toString())
                                 .or(PHARMACY.NAME.like(stringBuilder.toString())))
                         .groupBy(PHARMACY.ID).fetchInto(CustomPharmacy.class);
-                if (latitude != null && longitude!= null) {
+                if (latitude != null && longitude != null) {
                     pharmacies = GoogleService.orderPharmaciesByLocation(latitude, longitude, pharmacies);
                 }
             }
@@ -69,19 +69,20 @@ public class PharmaciesController {
 
     /**
      * Read a pharmacy from de database
+     *
      * @param pharmacyId
      * @return That pharmacy
      */
-    public static CustomPharmacy readPharmacy(Integer pharmacyId){
+    public static CustomPharmacy readPharmacy(Integer pharmacyId) {
         DBConnector connector = DBConnector.getInstance();
-        try{
-            return  connector.getContext().select(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER,
+        try {
+            return connector.getContext().select(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER,
                     PHARMACY.ADDRESS, PHARMACY.IMAGE_URL, ORDER.SCORE.avg().as("average_score")).
                     from(PRODUCT).join(PHARMACY).on(PRODUCT.PHARMACY_ID.equal(PHARMACY.ID))
                     .leftOuterJoin(ORDER).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID))
                     .where(PHARMACY.ID.equal(pharmacyId))
                     .groupBy(PHARMACY.ID).fetchOneInto(CustomPharmacy.class);
-        }finally {
+        } finally {
             connector.closeConnection();
         }
     }

@@ -16,8 +16,8 @@ import java.util.logging.Logger;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
- *
- * Mapper to display JSON map exceptions
+ *         <p/>
+ *         Mapper to display JSON map exceptions
  */
 @Provider
 public class JsonExceptionMapper implements ExceptionMapper<Exception> {
@@ -38,7 +38,6 @@ public class JsonExceptionMapper implements ExceptionMapper<Exception> {
         entity.put("type", type);
         entity.put("message", message);
 
-        // Log it too
         logger.log(Level.WARNING, type, e);
 
         return Response

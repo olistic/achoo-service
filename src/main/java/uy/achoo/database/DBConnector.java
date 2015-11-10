@@ -14,6 +14,8 @@ import java.sql.SQLException;
 
 /**
  * @author Alfredo El Ters
+ * @author Diego Muracciole
+ * @author Mathías Cabano
  * @author Matías Olivera
  */
 public final class DBConnector {
@@ -29,7 +31,7 @@ public final class DBConnector {
     private DBConnector() {
     }
 
-    public static DBConnector getInstance() {
+    public static synchronized DBConnector getInstance() {
         return INSTANCE;
     }
 

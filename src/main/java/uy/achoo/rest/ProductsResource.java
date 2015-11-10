@@ -17,8 +17,8 @@ import java.util.List;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
- *
- * Products endpoint
+ *         <p/>
+ *         Products endpoint
  */
 @Path("/products")
 @Produces(MediaType.APPLICATION_JSON)
@@ -30,10 +30,10 @@ public class ProductsResource {
         Response response;
         try {
             List<Product> products = ProductsController.listAllProducts();
-            response = Response.status(200).entity(products).build();
+            response = Response.status(Response.Status.OK).entity(products).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }
@@ -44,10 +44,10 @@ public class ProductsResource {
         Response response;
         try {
             Product product = ProductsController.readProduct(productId);
-            response = Response.status(200).entity(product).build();
+            response = Response.status(Response.Status.OK).entity(product).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }
@@ -58,10 +58,10 @@ public class ProductsResource {
         Response response;
         try {
             List<Product> products = ProductsController.searchProductsByName(productNamePart);
-            response = Response.status(200).entity(products).build();
+            response = Response.status(Response.Status.OK).entity(products).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }

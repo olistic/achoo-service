@@ -1,6 +1,5 @@
 package uy.achoo.rest.util;
 
-import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 import com.sun.jersey.spi.container.ContainerResponseFilter;
 import com.sun.jersey.spi.container.ResourceFilter;
@@ -21,8 +20,8 @@ import java.util.Map;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
- *
- * Filter for resources that require authentication
+ *         <p/>
+ *         Filter for resources that require authentication
  */
 public class AuthenticatedResourceFilter implements ResourceFilter {
 
@@ -30,7 +29,7 @@ public class AuthenticatedResourceFilter implements ResourceFilter {
             new WebApplicationException(
                     Response.status(Response.Status.UNAUTHORIZED)
                             .header(HttpHeaders.WWW_AUTHENTICATE, "Basic realm=\"realm\"")
-                            .entity("Page requires login.").build());
+                            .entity("This resource requires authentication").build());
 
     @Override
     public ContainerRequestFilter getRequestFilter() {
@@ -43,13 +42,7 @@ public class AuthenticatedResourceFilter implements ResourceFilter {
                         decodedToken.get("password").toString(), true)) {
                     return containerRequest;
                 }
-            } catch (ServletException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
+            } catch (ServletException | SQLException | NoSuchAlgorithmException | UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
             throw UNAUTHORIZED;

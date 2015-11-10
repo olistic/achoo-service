@@ -24,13 +24,13 @@ public class GoogleService {
             destinations[i] = pharmacyList.get(i).getAddress();
         }
         DistanceMatrixApiRequest distanceMatrixApi = new DistanceMatrixApiRequest(context);
-        distanceMatrixApi.origins(new LatLng(latitude,longitude));
+        distanceMatrixApi.origins(new LatLng(latitude, longitude));
         distanceMatrixApi.destinations(destinations);
         distanceMatrixApi.mode(TravelMode.WALKING);
 
         DistanceMatrix apiRequestResult = distanceMatrixApi.await();
         // Since only one origin is specified, the matrix only has one row
-        DistanceMatrixRow matrixRow = apiRequestResult.rows[apiRequestResult.rows.length-1];
+        DistanceMatrixRow matrixRow = apiRequestResult.rows[apiRequestResult.rows.length - 1];
         DistanceMatrixElement matrixElement;
         for (int j = 0; j < matrixRow.elements.length; j++) {
             matrixElement = matrixRow.elements[j];

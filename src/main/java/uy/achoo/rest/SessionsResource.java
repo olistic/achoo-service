@@ -1,11 +1,11 @@
 package uy.achoo.rest;
 
 import com.sun.jersey.spi.container.ResourceFilters;
-import uy.achoo.rest.util.CORSResourceFilter;
-import uy.achoo.wrappers.JWTWrapper;
 import uy.achoo.controller.UsersController;
 import uy.achoo.model.tables.pojos.User;
+import uy.achoo.rest.util.CORSResourceFilter;
 import uy.achoo.util.JWTUtils;
+import uy.achoo.wrappers.JWTWrapper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -16,8 +16,8 @@ import javax.ws.rs.core.Response;
  * @author Diego Muracciole
  * @author Mathías Cabano
  * @author Matías Olivera
- *
- * Sessions endpoint
+ *         <p/>
+ *         Sessions endpoint
  */
 @Path("/sessions")
 @Produces(MediaType.APPLICATION_JSON)
@@ -30,11 +30,15 @@ public class SessionsResource {
         Response response;
         try {
             User authenticatedUser = UsersController.fetchUserByEmailAndPassword(email, password);
-            String jwt = JWTUtils.encodePayload(JWTUtils.introspect(authenticatedUser));
-            response = Response.status(200).entity(new JWTWrapper(jwt)).build();
+            if (authenticatedUser != null) {
+                String jwt = JWTUtils.encodePayload(JWTUtils.introspect(authenticatedUser));
+                response = Response.status(Response.Status.OK).entity(new JWTWrapper(jwt)).build();
+            } else {
+                response = Response.status(Response.Status.UNAUTHORIZED).entity(null).build();
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }
