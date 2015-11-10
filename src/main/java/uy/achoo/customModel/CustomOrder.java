@@ -24,6 +24,8 @@ public class CustomOrder {
     private Integer pharmacyId;
     @Column(name = "name")
     private String pharmacyName;
+    @Column(name = "image_url")
+    private String pharmacyImageUrl;
     @Column(name = "date")
     private Timestamp date;
     @Column(name = "score")
@@ -35,6 +37,7 @@ public class CustomOrder {
     public Integer getId() {
         return id;
     }
+
 
     public void setId(Integer id) {
         this.id = id;
@@ -86,5 +89,13 @@ public class CustomOrder {
 
     public void setOrderLines(List<CustomOrderLine> orderLines) {
         this.orderLines = orderLines;
+    }
+
+    public String getPharmacyImageUrl() {
+        return pharmacyImageUrl;
+    }
+
+    public void setPharmacyImageUrl(String pharmacyImageUrl) {
+        this.pharmacyImageUrl = pharmacyImageUrl;
     }
 }

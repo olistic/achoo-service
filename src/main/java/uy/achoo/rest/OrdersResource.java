@@ -3,7 +3,6 @@ package uy.achoo.rest;
 import com.sun.jersey.spi.container.ResourceFilters;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.customModel.CustomOrder;
-import uy.achoo.rest.util.AuthenticatedResourceFilter;
 import uy.achoo.rest.util.CORSResourceFilter;
 import uy.achoo.util.JWTUtils;
 
@@ -54,8 +53,8 @@ public class OrdersResource {
             Map<String, Object> authorizationPayload = JWTUtils.decodeToken(token);
             order.setUserId((Integer) authorizationPayload.get("id"));
             order.setDate(new Timestamp(new Date().getTime()));
-            OrdersController.createOrder(order);
-            response = Response.status(Response.Status.OK).entity(order).build();
+            CustomOrder insertedOrder = OrdersController.createOrder(order);
+            response = Response.status(Response.Status.OK).entity(insertedOrder).build();
         } catch (SQLException | NullPointerException | MessagingException e) {
             e.printStackTrace();
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
@@ -66,11 +65,12 @@ public class OrdersResource {
     @PUT
     @Path("{orderId}/score")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response rate(@PathParam("orderId") Integer orderId, @FormParam("score") Integer score) {
+    public Response rate(@PathParam("orderId") Integer orderId, @FormParam("score") Integer score, @QueryParam("token") String token) {
         Response response;
+        Map<String, Object> authorizationPayload = JWTUtils.decodeToken(token);
         try {
-            if (score <= 5 && score >= 0)
-                OrdersController.rateOrder(orderId, score);
+            if (authorizationPayload != null && score <= 5 && score >= 0)
+                OrdersController.rateOrder(orderId, score, (Integer) authorizationPayload.get("id"));
             response = Response.status(Response.Status.OK).entity(score).build();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -86,9 +86,9 @@ public class OrdersResource {
         try {
             CustomOrder order = OrdersController.readOrder(orderId);
             Map<String, Object> authorizationPayload = JWTUtils.decodeToken(token);
-            if(authorizationPayload != null && authorizationPayload.get("id").equals(order.getUserId())){
+            if (authorizationPayload != null && authorizationPayload.get("id").equals(order.getUserId())) {
                 response = Response.status(Response.Status.OK).entity(order).build();
-            }else{
+            } else {
                 response = Response.status(Response.Status.UNAUTHORIZED).entity(null).build();
             }
         } catch (SQLException e) {

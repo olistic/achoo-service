@@ -5,7 +5,6 @@ import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.UsersController;
 import uy.achoo.customModel.CustomOrder;
 import uy.achoo.model.tables.pojos.User;
-import uy.achoo.rest.util.AuthenticatedResourceFilter;
 import uy.achoo.rest.util.CORSResourceFilter;
 import uy.achoo.util.EmailService;
 

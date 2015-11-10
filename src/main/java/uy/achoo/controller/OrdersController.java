@@ -74,11 +74,12 @@ public class OrdersController {
      * @return The orders new score
      * @throws SQLException
      */
-    public static Integer rateOrder(Integer orderId, Integer score) throws SQLException {
+    public static Integer rateOrder(Integer orderId, Integer score, Integer userId) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
         Connection connection = connector.createConnection();
         try {
-            connector.getContext(connection).update(ORDER).set(ORDER.SCORE, score).where(ORDER.ID.equal(orderId)).execute();
+            connector.getContext(connection).update(ORDER).set(ORDER.SCORE, score).where(ORDER.ID.equal(orderId)
+                    .and(ORDER.USER_ID.eq(userId))).execute();
             return score;
         } finally {
             connector.closeConnection(connection);
@@ -97,7 +98,7 @@ public class OrdersController {
         Connection connection = connector.createConnection();
         try {
             CustomOrder order = connector.getContext(connection).selectDistinct(ORDER.ID, ORDER.PHARMACY_ID,
-                    ORDER.USER_ID, ORDER.DATE, ORDER.SCORE, PHARMACY.NAME).
+                    ORDER.USER_ID, ORDER.DATE, ORDER.SCORE, PHARMACY.NAME, PHARMACY.IMAGE_URL).
                     from(ORDER).join(PHARMACY).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID)).where(ORDER.ID.equal(orderId))
                     .fetchOneInto(CustomOrder.class);
             // TODO : find a way to do it in a single query due to performance issues.
@@ -126,7 +127,7 @@ public class OrdersController {
         Connection connection = connector.createConnection();
         try {
             List<CustomOrder> orders = connector.getContext(connection).selectDistinct(ORDER.ID, ORDER.PHARMACY_ID,
-                    ORDER.USER_ID, ORDER.DATE, ORDER.SCORE, PHARMACY.NAME).
+                    ORDER.USER_ID, ORDER.DATE, ORDER.SCORE, PHARMACY.NAME, PHARMACY.IMAGE_URL).
                     from(ORDER).join(PHARMACY).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID)).where(ORDER.USER_ID.equal(userId))
                     .fetchInto(CustomOrder.class);
             List<CustomOrderLine> orderLines;
@@ -158,7 +159,7 @@ public class OrdersController {
         Connection connection = connector.createConnection();
         try {
             List<CustomOrder> orders = connector.getContext(connection).selectDistinct(ORDER.ID, ORDER.PHARMACY_ID,
-                    ORDER.USER_ID, ORDER.DATE, ORDER.SCORE, PHARMACY.NAME).
+                    ORDER.USER_ID, ORDER.DATE, ORDER.SCORE, PHARMACY.NAME, PHARMACY.IMAGE_URL).
                     from(ORDER).join(PHARMACY).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID)).where(ORDER.PHARMACY_ID.equal(pharmacyId))
                     .fetchInto(CustomOrder.class);
             List<CustomOrderLine> customOrderLines;
