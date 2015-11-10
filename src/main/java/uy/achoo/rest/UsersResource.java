@@ -44,9 +44,14 @@ public class UsersResource {
             response = Response.status(200).entity(users).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
+    }
+
+    @OPTIONS
+    public Response corsCreate() {
+      return Response.status(Response.Status.OK).build();
     }
 
     @POST
@@ -58,15 +63,14 @@ public class UsersResource {
             if (createdUser != null) {
                 EmailService.sendRegistrationMail(createdUser.getEmail(), createdUser.getFirstName());
             }
-            response = Response.status(200).entity(createdUser).build();
+            response = Response.status(Response.Status.OK).entity(createdUser).build();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException |
                 SQLException | MessagingException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }
-
 
     @GET
     @ResourceFilters(AuthenticatedResourceFilter.class)
@@ -75,10 +79,10 @@ public class UsersResource {
         Response response;
         try {
             List<OrderAndOrderLinesWrapper> orderAndOrderLines = OrdersController.findAllOrdersOfUser(userId);
-            response = Response.status(200).entity(orderAndOrderLines).build();
+            response = Response.status(Response.Status.OK).entity(orderAndOrderLines).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }
@@ -93,10 +97,10 @@ public class UsersResource {
             if (newPassword != null) {
                 EmailService.sendResetPasswordMail(email, newPassword);
             }
-            response = Response.status(200).entity(newPassword != null ? "\"" + newPassword + "\"" : null).build();
+            response = Response.status(Response.Status.OK).entity(newPassword != null ? "\"" + newPassword + "\"" : null).build();
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | SQLException | MessagingException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }
@@ -107,10 +111,10 @@ public class UsersResource {
         Response response;
         try {
             Boolean result = UsersController.isEmailAvailable(email);
-            response = Response.status(200).entity(result).build();
+            response = Response.status(Response.Status.OK).entity(result).build();
         } catch (SQLException e) {
             e.printStackTrace();
-            response = Response.status(500).entity(null).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
         }
         return response;
     }
