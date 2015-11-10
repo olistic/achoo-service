@@ -50,8 +50,8 @@ public class UsersController {
     }
 
     private static UserRecord insertUser(User user, DSLContext context) {
-        return context.insertInto(USER, USER.EMAIL, USER.FIRST_NAME, USER.LAST_NAME, USER.ADDRESS ,USER.PASSWORD, USER.SALT)
-                .values(user.getEmail(), user.getFirstName(), user.getLastName(),user.getAddress() ,user.getPassword(), user.getSalt())
+        return context.insertInto(USER, USER.EMAIL, USER.FIRST_NAME, USER.LAST_NAME, USER.ADDRESS, USER.PASSWORD, USER.SALT)
+                .values(user.getEmail(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPassword(), user.getSalt())
                 .returning(USER.ID).fetchOne();
     }
 

@@ -4,12 +4,11 @@ import com.sun.jersey.spi.container.ResourceFilters;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.PharmaciesController;
 import uy.achoo.controller.ProductsController;
+import uy.achoo.customModel.CustomOrderAndOrderLines;
 import uy.achoo.customModel.CustomPharmacy;
-import uy.achoo.model.tables.pojos.Pharmacy;
 import uy.achoo.model.tables.pojos.Product;
 import uy.achoo.rest.util.AuthenticatedResourceFilter;
 import uy.achoo.rest.util.CORSResourceFilter;
-import uy.achoo.wrappers.OrderAndOrderLinesWrapper;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -41,7 +40,7 @@ public class PharmaciesResource {
         try {
             List<CustomPharmacy> pharmacies;
             if (query == null) {
-                 pharmacies = PharmaciesController.findAllPharmacies();
+                pharmacies = PharmaciesController.findAllPharmacies();
             } else {
                 pharmacies = PharmaciesController.searchPharmaciesByNameOrProductName(query,
                         latitude, longitude);
@@ -68,7 +67,7 @@ public class PharmaciesResource {
     public Response listOrders(@PathParam("pharmacyId") Integer pharmacyId) {
         Response response;
         try {
-            List<OrderAndOrderLinesWrapper> orderAndOrderLines = OrdersController.findAllOrdersOfDrugStore(pharmacyId);
+            List<CustomOrderAndOrderLines> orderAndOrderLines = OrdersController.findAllOrdersOfPharmacy(pharmacyId);
             response = Response.status(Response.Status.OK).entity(orderAndOrderLines).build();
         } catch (SQLException e) {
             e.printStackTrace();

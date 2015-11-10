@@ -3,6 +3,9 @@ package uy.achoo.controller;
 import org.jooq.BatchBindStep;
 import org.jooq.Configuration;
 import org.jooq.DSLContext;
+import uy.achoo.customModel.CustomOrder;
+import uy.achoo.customModel.CustomOrderAndOrderLines;
+import uy.achoo.customModel.CustomOrderLine;
 import uy.achoo.database.DBConnector;
 import uy.achoo.model.tables.daos.OrderDao;
 import uy.achoo.model.tables.daos.OrderLineDao;
@@ -20,8 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static uy.achoo.model.Tables.ORDER;
-import static uy.achoo.model.Tables.ORDER_LINE;
+import static uy.achoo.model.Tables.*;
 
 /**
  * @author Alfredo El Ters
@@ -121,20 +123,27 @@ public class OrdersController {
      * @return The orders made by the user
      * @throws SQLException
      */
-    public static List<OrderAndOrderLinesWrapper> findAllOrdersOfUser(Integer userId) throws SQLException {
+    public static List<CustomOrderAndOrderLines> findAllOrdersOfUser(Integer userId) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
         Connection connection = connector.createConnection();
         try {
-            Configuration configuration = connector.getConfiguration(connection);
-            List<OrderAndOrderLinesWrapper> ordersAndOrderLines = new ArrayList<>();
-            List<Order> orders = new OrderDao(configuration).fetchByUserId(userId);
-            OrderAndOrderLinesWrapper orderAndLines;
-            OrderLineDao orderLineDao = new OrderLineDao(configuration);
+            List<CustomOrderAndOrderLines> ordersAndOrderLines = new ArrayList<>();
+            List<CustomOrder> orders = connector.getContext(connection).selectDistinct(ORDER.ID, ORDER.PHARMACY_ID,
+                    ORDER.USER_ID, ORDER.DATE, ORDER.SCORE, PHARMACY.NAME).
+                    from(ORDER).join(PHARMACY).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID)).where(ORDER.USER_ID.equal(userId))
+                    .fetchInto(CustomOrder.class);
+            CustomOrderAndOrderLines orderAndLines;
+            List<CustomOrderLine> customOrderLines;
             // TODO : find a way to do it in a single query due to performance issues.
-            for (Order order : orders) {
-                orderAndLines = new OrderAndOrderLinesWrapper();
+            for (CustomOrder order : orders) {
+                customOrderLines = connector.getContext(connection).selectDistinct(ORDER_LINE.ORDER_ID, ORDER_LINE.PRODUCT_ID,
+                        ORDER_LINE.QUANTITY, PRODUCT.UNITARY_PRICE, PRODUCT.NAME).
+                        from(ORDER_LINE).join(PRODUCT).on(ORDER_LINE.PRODUCT_ID.equal(PRODUCT.ID))
+                        .where(ORDER_LINE.ORDER_ID.equal(order.getId()))
+                        .fetchInto(CustomOrderLine.class);
+                orderAndLines = new CustomOrderAndOrderLines();
                 orderAndLines.setOrder(order);
-                orderAndLines.setOrderLines(orderLineDao.fetchByOrderId(order.getId()));
+                orderAndLines.setOrderLines(customOrderLines);
                 ordersAndOrderLines.add(orderAndLines);
             }
             return ordersAndOrderLines;
@@ -151,20 +160,27 @@ public class OrdersController {
      * @return The orders made to the pharmacy
      * @throws SQLException
      */
-    public static List<OrderAndOrderLinesWrapper> findAllOrdersOfDrugStore(Integer pharmacyId) throws SQLException {
+    public static List<CustomOrderAndOrderLines> findAllOrdersOfPharmacy(Integer pharmacyId) throws SQLException {
         DBConnector connector = DBConnector.getInstance();
         Connection connection = connector.createConnection();
         try {
-            Configuration configuration = connector.getConfiguration(connection);
-            List<OrderAndOrderLinesWrapper> ordersAndOrderLines = new ArrayList<>();
-            List<Order> orders = new OrderDao(configuration).fetchByPharmacyId(pharmacyId);
-            OrderAndOrderLinesWrapper orderAndLines;
-            OrderLineDao orderLineDao = new OrderLineDao(configuration);
+            List<CustomOrderAndOrderLines> ordersAndOrderLines = new ArrayList<>();
+            List<CustomOrder> orders = connector.getContext(connection).selectDistinct(ORDER.ID, ORDER.PHARMACY_ID,
+                    ORDER.USER_ID, ORDER.DATE, ORDER.SCORE, PHARMACY.NAME).
+                    from(ORDER).join(PHARMACY).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID)).where(ORDER.PHARMACY_ID.equal(pharmacyId))
+                    .fetchInto(CustomOrder.class);
+            CustomOrderAndOrderLines orderAndLines;
+            List<CustomOrderLine> customOrderLines;
             // TODO : find a way to do it in a single query due to performance issues.
-            for (Order order : orders) {
-                orderAndLines = new OrderAndOrderLinesWrapper();
+            for (CustomOrder order : orders) {
+                customOrderLines = connector.getContext(connection).selectDistinct(ORDER_LINE.ORDER_ID, ORDER_LINE.PRODUCT_ID,
+                        ORDER_LINE.QUANTITY, PRODUCT.UNITARY_PRICE, PRODUCT.NAME).
+                        from(ORDER_LINE).join(PRODUCT).on(ORDER_LINE.PRODUCT_ID.equal(PRODUCT.ID))
+                        .where(ORDER_LINE.ORDER_ID.equal(order.getId()))
+                        .fetchInto(CustomOrderLine.class);
+                orderAndLines = new CustomOrderAndOrderLines();
                 orderAndLines.setOrder(order);
-                orderAndLines.setOrderLines(orderLineDao.fetchByOrderId(order.getId()));
+                orderAndLines.setOrderLines(customOrderLines);
                 ordersAndOrderLines.add(orderAndLines);
             }
             return ordersAndOrderLines;

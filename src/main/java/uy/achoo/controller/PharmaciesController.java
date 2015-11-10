@@ -2,8 +2,6 @@ package uy.achoo.controller;
 
 import uy.achoo.customModel.CustomPharmacy;
 import uy.achoo.database.DBConnector;
-import uy.achoo.model.tables.daos.PharmacyDao;
-import uy.achoo.model.tables.pojos.Pharmacy;
 import uy.achoo.util.GoogleService;
 
 import java.sql.Connection;
@@ -31,10 +29,10 @@ public class PharmaciesController {
         Connection connection = connector.createConnection();
         try {
             List<CustomPharmacy> pharmacies = connector.getContext(connection).selectDistinct(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER,
-                        PHARMACY.ADDRESS, PHARMACY.IMAGE_URL, ORDER.SCORE.avg().as("average_score")).
-                        from(PRODUCT).join(PHARMACY).on(PRODUCT.PHARMACY_ID.equal(PHARMACY.ID))
-                        .leftOuterJoin(ORDER).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID))
-                        .groupBy(PHARMACY.ID).fetchInto(CustomPharmacy.class);
+                    PHARMACY.ADDRESS, PHARMACY.IMAGE_URL, ORDER.SCORE.avg().as("average_score")).
+                    from(PRODUCT).join(PHARMACY).on(PRODUCT.PHARMACY_ID.equal(PHARMACY.ID))
+                    .leftOuterJoin(ORDER).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID))
+                    .groupBy(PHARMACY.ID).fetchInto(CustomPharmacy.class);
             return pharmacies;
         } finally {
             connector.closeConnection(connection);

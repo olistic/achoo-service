@@ -3,11 +3,11 @@ package uy.achoo.rest;
 import com.sun.jersey.spi.container.ResourceFilters;
 import uy.achoo.controller.OrdersController;
 import uy.achoo.controller.UsersController;
+import uy.achoo.customModel.CustomOrderAndOrderLines;
 import uy.achoo.model.tables.pojos.User;
 import uy.achoo.rest.util.AuthenticatedResourceFilter;
 import uy.achoo.rest.util.CORSResourceFilter;
 import uy.achoo.util.EmailService;
-import uy.achoo.wrappers.OrderAndOrderLinesWrapper;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
@@ -32,13 +32,13 @@ import java.util.List;
 @ResourceFilters(CORSResourceFilter.class)
 public class UsersResource {
 
+    @Inject
+    public UsersResource() {
+    }
+
     @OPTIONS
     public Response corsCreate() {
         return Response.status(Response.Status.OK).build();
-    }
-
-    @Inject
-    public UsersResource() {
     }
 
     @GET
@@ -78,7 +78,7 @@ public class UsersResource {
     public Response listOrders(@PathParam("userId") Integer userId) {
         Response response;
         try {
-            List<OrderAndOrderLinesWrapper> orderAndOrderLines = OrdersController.findAllOrdersOfUser(userId);
+            List<CustomOrderAndOrderLines> orderAndOrderLines = OrdersController.findAllOrdersOfUser(userId);
             response = Response.status(Response.Status.OK).entity(orderAndOrderLines).build();
         } catch (SQLException e) {
             e.printStackTrace();
