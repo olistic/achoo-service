@@ -30,6 +30,12 @@ import java.util.Map;
 @Produces(MediaType.APPLICATION_JSON)
 @ResourceFilters(CORSResourceFilter.class)
 public class OrdersResource {
+
+    @OPTIONS
+    public Response corsCreate() {
+        return Response.status(Response.Status.OK).build();
+    }
+
     @GET
     @ResourceFilters(AuthenticatedResourceFilter.class)
     @Consumes(MediaType.APPLICATION_JSON)

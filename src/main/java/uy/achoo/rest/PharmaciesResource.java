@@ -28,6 +28,11 @@ import java.util.List;
 @ResourceFilters(CORSResourceFilter.class)
 public class PharmaciesResource {
 
+    @OPTIONS
+    public Response corsCreate() {
+        return Response.status(Response.Status.OK).build();
+    }
+
     @GET
     public Response listPharmacies(@QueryParam("name") String productNamePart,
                                    @QueryParam("latitude") Double latitude,

@@ -25,6 +25,11 @@ import java.util.List;
 @ResourceFilters(CORSResourceFilter.class)
 public class ProductsResource {
 
+    @OPTIONS
+    public Response corsCreate() {
+        return Response.status(Response.Status.OK).build();
+    }
+
     @GET
     public Response listAllProducts() {
         Response response;
