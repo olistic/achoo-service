@@ -62,7 +62,7 @@ public class OrdersResource {
         return response;
     }
 
-    @PUT
+    @POST
     @Path("{orderId}/score")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response rate(@PathParam("orderId") Integer orderId, @FormParam("score") Integer score, @QueryParam("token") String token) {
