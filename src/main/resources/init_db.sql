@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `order` (
 CREATE TABLE IF NOT EXISTS `order_line` (
   `order_id`   INT NOT NULL,
   `product_id` INT NOT NULL,
-  `amount`     INT NOT NULL,
+  `quantity`   INT NOT NULL,
   PRIMARY KEY (`order_id`, `product_id`),
   INDEX `fk_order_lines_products_idx` (`product_id` ASC),
   CONSTRAINT `fk_order_lines_products`

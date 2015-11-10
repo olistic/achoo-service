@@ -63,11 +63,11 @@ public class OrdersController {
 
     private static void insertOrderLines(List<OrderLine> orderLines, DSLContext context, OrderRecord insertedOrder) {
         BatchBindStep batchInsert = context.batch(context
-                .insertInto(ORDER_LINE, ORDER_LINE.ORDER_ID, ORDER_LINE.PRODUCT_ID, ORDER_LINE.AMOUNT)
+                .insertInto(ORDER_LINE, ORDER_LINE.ORDER_ID, ORDER_LINE.PRODUCT_ID, ORDER_LINE.QUANTITY)
                 .values((Integer) null, null, null));
-        for (OrderLine line : orderLines) {
-            line.setOrderId(insertedOrder.getId());
-            batchInsert.bind(line.getOrderId(), line.getProductId(), line.getAmount());
+        for (OrderLine orderLine : orderLines) {
+            orderLine.setOrderId(insertedOrder.getId());
+            batchInsert.bind(orderLine.getOrderId(), orderLine.getProductId(), orderLine.getQuantity());
         }
         batchInsert.execute();
     }
