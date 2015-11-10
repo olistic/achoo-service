@@ -39,14 +39,14 @@ public class PharmaciesResource {
                                    @QueryParam("longitude") Double longitude) {
         Response response;
         try {
+            List<CustomPharmacy> pharmacies;
             if (productNamePart == null) {
-                List<Pharmacy> pharmacies = PharmaciesController.findAllPharmacies();
-                response = Response.status(Response.Status.OK).entity(pharmacies).build();
+                 pharmacies = PharmaciesController.findAllPharmacies();
             } else {
-                List<CustomPharmacy> pharmacies = PharmaciesController.searchPharmaciesByNameOrProductName(productNamePart,
+                pharmacies = PharmaciesController.searchPharmaciesByNameOrProductName(productNamePart,
                         latitude, longitude);
-                response = Response.status(Response.Status.OK).entity(pharmacies).build();
             }
+            response = Response.status(Response.Status.OK).entity(pharmacies).build();
         } catch (Exception e) {
             e.printStackTrace();
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();

@@ -25,10 +25,14 @@ public class PharmaciesController {
      * @return Pharmacies found
      * @throws SQLException
      */
-    public static List<Pharmacy> findAllPharmacies() throws SQLException {
+    public static List<CustomPharmacy> findAllPharmacies() throws SQLException {
         DBConnector connector = DBConnector.getInstance();
         try {
-            List<Pharmacy> pharmacies = new PharmacyDao(connector.getConfiguration()).findAll();
+            List<CustomPharmacy> pharmacies = connector.getContext().selectDistinct(PHARMACY.ID, PHARMACY.NAME, PHARMACY.PHONE_NUMBER,
+                        PHARMACY.ADDRESS, PHARMACY.IMAGE_URL, ORDER.SCORE.avg().as("average_score")).
+                        from(PRODUCT).join(PHARMACY).on(PRODUCT.PHARMACY_ID.equal(PHARMACY.ID))
+                        .leftOuterJoin(ORDER).on(ORDER.PHARMACY_ID.equal(PHARMACY.ID))
+                        .groupBy(PHARMACY.ID).fetchInto(CustomPharmacy.class);
             return pharmacies;
         } finally {
             connector.closeConnection();
