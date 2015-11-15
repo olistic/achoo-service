@@ -1,4 +1,4 @@
-DROP DATABASE `achoo_dev`;
+DROP DATABASE IF EXISTS `achoo_dev`;
 
 CREATE DATABASE `achoo_dev`;
 
